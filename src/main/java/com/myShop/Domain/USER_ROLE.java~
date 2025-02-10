@@ -1,0 +1,6 @@
+package com.myShop.Domain;
+
+public enum USER_ROLE {
+
+    
+}
