@@ -1,0 +1,49 @@
+package com.myShop.entity;
+
+
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode
+public class Product {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+
+    private String title;
+
+    private String description;
+
+    private int mrpPrice;
+
+    private  int sellingPrice;
+
+    private int discountPercent;
+
+    private int quantity;
+
+    private String color;
+
+    @ElementCollection //crete a table for images separately
+    private List<String> images=new ArrayList<>();
+
+    private int numRatings;
+
+    @ManyToOne
+    private Calegory category;
+
+    @ManyToOne
+    private Seller seller;
+
+    
+
+}
