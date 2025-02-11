@@ -1,7 +1,6 @@
 package com.myShop.entity;
 
 
-import com.myShop.Domain.AccountStatus;
 import com.myShop.Domain.USER_ROLE;
 import jakarta.persistence.*;
 import lombok.*;

@@ -1,4 +1,4 @@
 package com.myShop.entity;
 
-public class Calegory {
+public class BankDetails {
 }
