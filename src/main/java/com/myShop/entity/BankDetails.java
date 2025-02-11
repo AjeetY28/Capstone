@@ -1,4 +1,19 @@
 package com.myShop.entity;
 
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class BankDetails {
+
+    private String accountNumber;
+    private String accountHolderName;
+//    private String bankName;
+    private String ifscCode;
 }

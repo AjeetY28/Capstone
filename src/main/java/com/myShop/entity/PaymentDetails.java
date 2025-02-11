@@ -1,0 +1,22 @@
+package com.myShop.entity;
+
+
+import com.myShop.Domain.PaymentStatus;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public class PaymentDetails {
+
+    private String paymentId;
+    private String razorpayPaymentLinkId;
+    private String razorpayPaymentLinkReferenceId;
+    private String razorpayPaymentLinkStatus;
+    private String razorpayPaymentId; //ZWSP will be not added it will be added by razorpay
+    private PaymentStatus status;
+}
