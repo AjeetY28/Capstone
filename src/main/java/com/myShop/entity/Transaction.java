@@ -2,32 +2,32 @@ package com.myShop.entity;
 
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
-
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
+@Data
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-public class Category {
+public class Transaction {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private String name;
-
-    @NotNull
-    @Column(unique = true)
-    private String categoryId;
+    @ManyToOne
+    private User customer;
 
     @ManyToOne
-    private Category parentCategory;
+    private Order order;
 
-    @NotNull
-    private Integer level; //
+    @ManyToOne
+    private Seller seller;
+
+    private LocalDateTime date=LocalDateTime.now();
 }

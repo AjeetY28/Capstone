@@ -8,29 +8,17 @@ import jakarta.persistence.Id;
 import lombok.*;
 
 @Entity
+@Data
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-public class CartItem {
+public class Transaction {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @M
-    private Cart cart;
-
-    private Product product;
-
-    private String size;
-
-    private int quantity;
-
-    private  Integer mrpPrice;
-
-    private Integer sellingPrice;
-
-    private Long userId;
+     
 }

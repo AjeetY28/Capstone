@@ -12,6 +12,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
+@Data
 public class Address {
 
     @Id

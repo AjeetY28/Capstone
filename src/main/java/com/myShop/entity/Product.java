@@ -11,6 +11,7 @@ import java.util.List;
 @Entity
 @Setter
 @Getter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
