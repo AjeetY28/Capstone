@@ -1,0 +1,4 @@
+package com.myShop.config;
+
+public class JWT_CONSTANT {
+}
