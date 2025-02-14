@@ -1,5 +1,0 @@
-package com.myShop.Domain;
-
-public enum HomeCategorySection {
-    
-}

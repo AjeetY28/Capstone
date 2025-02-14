@@ -1,4 +1,4 @@
-package com.myShop.Domain;
+package com.myShop.domain;
 
 public enum USER_ROLE {
 

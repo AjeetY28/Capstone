@@ -1,0 +1,5 @@
+package com.myShop.service;
+
+public class AuthService {
+    
+}

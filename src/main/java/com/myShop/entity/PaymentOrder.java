@@ -1,7 +1,7 @@
 package com.myShop.entity;
 
-import com.myShop.Domain.PaymentMethod;
-import com.myShop.Domain.PaymentOrderStatus;
+import com.myShop.domain.PaymentMethod;
+import com.myShop.domain.PaymentOrderStatus;
 import jakarta.persistence.*;
 import lombok.*;
 

@@ -1,8 +1,8 @@
 package com.myShop.entity;
 
 
-import com.myShop.Domain.OrderStatus;
-import com.myShop.Domain.PaymentStatus;
+import com.myShop.domain.OrderStatus;
+import com.myShop.domain.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -17,6 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
+@Table(name = "orders")
 public class Order {
 
     @Id

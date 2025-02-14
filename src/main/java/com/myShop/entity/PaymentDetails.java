@@ -1,7 +1,7 @@
 package com.myShop.entity;
 
 
-import com.myShop.Domain.PaymentStatus;
+import com.myShop.domain.PaymentStatus;
 import lombok.*;
 
 @Getter
