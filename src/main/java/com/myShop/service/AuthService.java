@@ -1,5 +1,8 @@
 package com.myShop.service;
 
-public class AuthService {
-    
+import com.myShop.response.SignupRequest;
+
+public interface AuthService {
+
+    String createUser(SignupRequest req);
 }

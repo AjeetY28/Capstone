@@ -13,6 +13,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.crypto.SecretKey;
@@ -24,8 +25,7 @@ public class JwtTokenValidator extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String jwt=request.getHeader("Authorization");
-        if(jwt!=null)
-        {
+        if(jwt!=null) {
             jwt=jwt.substring(7); //Bearer
             try
             {
@@ -43,11 +43,13 @@ public class JwtTokenValidator extends OncePerRequestFilter {
                         .commaSeparatedStringToAuthorityList(authorities);
 
                 Authentication authentication=new UsernamePasswordAuthenticationToken(email,null,auths);
-
+                SecurityContextHolder.getContext().setAuthentication(authentication);
             }catch (Exception e)
             {
                 throw new BadCredentialsException("Invalid JWT token.....");
             }
         }
+
+        filterChain.doFilter(request,response);
     }
 }
