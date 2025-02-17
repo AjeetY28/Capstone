@@ -1,0 +1,9 @@
+package com.myShop.repository;
+
+import com.myShop.entity.Seller;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface SellerRepository extends JpaRepository<Seller,Long> {
+
+    Seller find
+}

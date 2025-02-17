@@ -1,10 +1,13 @@
 package com.myShop.service.impl;
 
+import com.myShop.config.JwtProvider;
 import com.myShop.domain.USER_ROLE;
 import com.myShop.entity.Cart;
 import com.myShop.entity.User;
+import com.myShop.entity.VerificationCode;
 import com.myShop.repository.CartRepository;
 import com.myShop.repository.UserRepository;
+import com.myShop.repository.VerificationCodeRepository;
 import com.myShop.response.SignupRequest;
 import com.myShop.service.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -27,9 +30,23 @@ public class AuthServiceImpl implements AuthService{
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final CartRepository cartRepository;
+    private final JwtProvider jwtProvider;
+    private final VerificationCodeRepository verificationCodeRepository;
 
     @Override
-    public String createUser(SignupRequest req) {
+    public void sentLoginOtp(String email) {
+
+    }
+
+    @Override
+    public String createUser(SignupRequest req) throws Exception {
+
+        VerificationCode verificationCode=verificationCodeRepository.findByEmail(req.getEmail());
+
+        if(verificationCode==null || !verificationCode.getOtp().equals(req.getOtp())) {
+            throw new Exception("wrong otp...");
+        }
+
 
         User user=userRepository.findByEmail(req.getEmail());
 
@@ -52,7 +69,8 @@ public class AuthServiceImpl implements AuthService{
         authorities.add(new SimpleGrantedAuthority(USER_ROLE.ROLE_CUSTOMER.toString()));
 
         Authentication authentication=new UsernamePasswordAuthenticationToken(user.getEmail(),null,authorities);
-        SecurityContextHolder.getContext()
-        return "";
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        return jwtProvider.generateToken(authentication);
     }
 }
