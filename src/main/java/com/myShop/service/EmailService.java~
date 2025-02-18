@@ -15,8 +15,12 @@ import org.springframework.stereotype.Service;
 public class EmailService {
 
     private final JavaMailSender javaMailSender;
-
-    public void sendVerificationOtpEmail(String userEmail,String otp,String subject,String text) {
+ 
+    public void sendVerificationOtpEmail(String userEmail,
+                                         String otp,
+                                         String subject,
+                                         String text)
+                                throws MessagingException {
         try{
             MimeMessage mimeMessage=javaMailSender.createMimeMessage();
             MimeMessageHelper mimeMessageHelper=new MimeMessageHelper(
@@ -27,6 +31,6 @@ public class EmailService {
             javaMailSender.send(mimeMessage);
         } catch (MailException e) {
             throw new MailSendException("failed to send email");
-        } 
+        }
     }
 }

@@ -2,7 +2,9 @@ package com.myShop.controller;
 
 import com.myShop.domain.USER_ROLE;
 import com.myShop.entity.User;
+import com.myShop.entity.VerificationCode;
 import com.myShop.repository.UserRepository;
+import com.myShop.response.ApiResponse;
 import com.myShop.response.AuthResponse;
 import com.myShop.response.SignupRequest;
 import com.myShop.service.AuthService;
@@ -30,6 +32,20 @@ public class AuthController {
         res.setJwt(jwt);
         res.setMessage("Register Success");
         res.setRole(USER_ROLE.ROLE_CUSTOMER);
+
+        return ResponseEntity.ok(res);
+    }
+
+
+    @PostMapping("/sent/login-signup-otp")
+    public ResponseEntity<ApiResponse> sentOtpHandler(@RequestBody VerificationCode req) throws Exception {
+
+
+        authService.sentLoginOtp(req.getEmail());
+
+        ApiResponse res=new ApiResponse();
+
+        res.setMessage("Otp sent Successfully");
 
         return ResponseEntity.ok(res);
     }

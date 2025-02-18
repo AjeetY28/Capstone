@@ -10,6 +10,8 @@ import com.myShop.repository.UserRepository;
 import com.myShop.repository.VerificationCodeRepository;
 import com.myShop.response.SignupRequest;
 import com.myShop.service.AuthService;
+import com.myShop.service.EmailService;
+import com.myShop.utils.OtpUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -31,11 +33,40 @@ public class AuthServiceImpl implements AuthService{
     private final PasswordEncoder passwordEncoder;
     private final CartRepository cartRepository;
     private final JwtProvider jwtProvider;
+    private final EmailService emailService;
     private final VerificationCodeRepository verificationCodeRepository;
 
     @Override
-    public void sentLoginOtp(String email) {
+    public void sentLoginOtp(String email) throws Exception {
+        String SIGNING_PREFIX="signing_";
 
+        if(email.startsWith(SIGNING_PREFIX)){
+            email=email.substring(SIGNING_PREFIX.length());
+
+            User user=userRepository.findByEmail(email);
+            if(user==null){
+                throw new Exception("user not exist with provided email");
+            }
+        }
+        VerificationCode isExist=verificationCodeRepository.findByEmail(email);
+        if(isExist!=null)
+        {
+            verificationCodeRepository.delete(isExist);
+        }
+
+        String otp= OtpUtil.generateOtp();
+
+        VerificationCode verificationCode=new VerificationCode();
+        verificationCode.setEmail(email);
+        verificationCode.setOtp(otp);
+
+        verificationCodeRepository.save(verificationCode);
+
+        String subject="Ecommerce Login/Sing up Otp";
+
+        String text="you Login/Sing up otp is - "+otp;
+
+        emailService.sendVerificationOtpEmail(email,otp,subject,text);
     }
 
     @Override
