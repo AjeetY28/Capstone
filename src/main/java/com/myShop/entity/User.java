@@ -25,7 +25,7 @@ public class User {
     private String email;
     private String name;
     private String phone;
-    private USER_ROLE role = USER_ROLE.ROLE_USER;
+    private USER_ROLE role = USER_ROLE.ROLE_CUSTOMER;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;

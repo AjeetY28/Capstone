@@ -4,6 +4,7 @@ import com.myShop.domain.USER_ROLE;
 import com.myShop.entity.User;
 import com.myShop.entity.VerificationCode;
 import com.myShop.repository.UserRepository;
+import com.myShop.request.LoginRequest;
 import com.myShop.response.ApiResponse;
 import com.myShop.response.AuthResponse;
 import com.myShop.response.SignupRequest;
@@ -48,5 +49,16 @@ public class AuthController {
         res.setMessage("Otp sent Successfully");
 
         return ResponseEntity.ok(res);
+    }
+
+
+    @PostMapping("/singing")
+    public ResponseEntity<AuthResponse> loginHandler(@RequestBody LoginRequest req) throws Exception {
+
+
+        AuthResponse authResponse =authService.signIn(req);
+
+
+        return ResponseEntity.ok(authResponse);
     }
 }

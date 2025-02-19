@@ -16,8 +16,8 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
-@Service
 @RequiredArgsConstructor
+@Service
 public class CustomUserServiceImpl implements UserDetailsService {
 
     private final UserRepository userRepository;
@@ -49,7 +49,7 @@ public class CustomUserServiceImpl implements UserDetailsService {
         }
 
         List<GrantedAuthority> authorityList=new ArrayList<>();
-        authorityList.add(new SimpleGrantedAuthority("ROLE "+role));
+        authorityList.add(new SimpleGrantedAuthority(role));
         return new org.springframework.security.core.userdetails.User(email,password,authorityList);
     }
 }
