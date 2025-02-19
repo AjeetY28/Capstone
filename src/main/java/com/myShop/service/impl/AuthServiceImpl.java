@@ -90,7 +90,7 @@ public class AuthServiceImpl implements AuthService{
         if(user==null)
         {
             User createdUser=new User();
-            createdUser.setName(req.getFullName());
+            createdUser.setName(req.getName());
             createdUser.setEmail(req.getEmail());
             createdUser.setRole(USER_ROLE.ROLE_CUSTOMER);
             createdUser.setPhone("9876543210");
