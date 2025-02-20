@@ -80,7 +80,7 @@ public class SellerServiceImpl implements SellerService {
 
     @Override
     public Seller updateSeller(Seller seller, Long id) {
-        
+
         return null;
     }
 
