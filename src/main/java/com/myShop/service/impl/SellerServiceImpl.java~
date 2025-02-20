@@ -63,7 +63,7 @@ public class SellerServiceImpl implements SellerService {
 
     @Override
     public Seller getSellerByEmail(String email) throws Exception {
-        Seller seller=sellerRepository.findByEmail(email);
+        Seller seller=sellerRepository.findBygitEmail(email);
         if(seller!=null)
         {
             throw new Exception("Seller not found......");
