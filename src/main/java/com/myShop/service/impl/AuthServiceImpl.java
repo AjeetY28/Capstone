@@ -3,9 +3,11 @@ package com.myShop.service.impl;
 import com.myShop.config.JwtProvider;
 import com.myShop.domain.USER_ROLE;
 import com.myShop.entity.Cart;
+import com.myShop.entity.Seller;
 import com.myShop.entity.User;
 import com.myShop.entity.VerificationCode;
 import com.myShop.repository.CartRepository;
+import com.myShop.repository.SellerRepository;
 import com.myShop.repository.UserRepository;
 import com.myShop.repository.VerificationCodeRepository;
 import com.myShop.request.LoginRequest;
@@ -41,19 +43,33 @@ public class AuthServiceImpl implements AuthService{
     private final EmailService emailService;
     private final CustomUserServiceImpl customUserService;
     private final VerificationCodeRepository verificationCodeRepository;
+    private final SellerRepository sellerRepository;
 
     @Override
-    public void sentLoginOtp(String email) throws Exception {
+    public void sentLoginOtp(String email,USER_ROLE role) throws Exception {
         String SIGNING_PREFIX="signing_";
 
         if(email.startsWith(SIGNING_PREFIX)){
             email=email.substring(SIGNING_PREFIX.length());
 
-            User user=userRepository.findByEmail(email);
-            if(user==null){
-                throw new Exception("user not exist with provided email");
+            if(role.equals(USER_ROLE.ROLE_SELLER)){
+                Seller seller=sellerRepository.findByEmail(email);
+                if(seller==null){
+                    throw new Exception("seller not found");
+                }
             }
+            else {
+                User user=userRepository.findByEmail(email);
+                if(user==null){
+                    throw new Exception("user not exist with provided email");
+                }
+            }
+
         }
+
+
+
+
         VerificationCode isExist=verificationCodeRepository.findByEmail(email);
         if(isExist!=null)
         {

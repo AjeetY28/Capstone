@@ -63,7 +63,7 @@ public class SellerServiceImpl implements SellerService {
 
     @Override
     public Seller getSellerByEmail(String email) throws Exception {
-        Seller seller=sellerRepository.findBygitEmail(email);
+        Seller seller=sellerRepository.findByEmail(email);
         if(seller!=null)
         {
             throw new Exception("Seller not found......");
@@ -79,19 +79,74 @@ public class SellerServiceImpl implements SellerService {
     }
 
     @Override
-    public Seller updateSeller(Seller seller, Long id) {
+    public Seller updateSeller(Seller seller, Long id) throws Exception {
+        Seller existingSeller=this.getSellerById(id);
 
-        return null;
+        if(seller.getSellerName()!=null){
+            existingSeller.setSellerName(seller.getSellerName());
+        }
+        if(seller.getPhone()!=null){
+            existingSeller.setPhone(seller.getPhone());
+        }
+        if(seller.getEmail()!=null){
+            existingSeller.setEmail(seller.getEmail());
+        }
+        if(seller.getBusinessDetails()!=null
+        && seller.getBusinessDetails().getBusinessName()!=null
+        ){
+            existingSeller.getBusinessDetails().setBusinessName(
+                    seller.getBusinessDetails().getBusinessName()
+            );
+        }
+
+        if(seller.getBankDetails()!=null
+                && seller.getBankDetails().getAccountHolderName()!=null
+                && seller.getBankDetails().getIfscCode()!=null
+                && seller.getBankDetails().getAccountNumber()!=null
+        ){
+            existingSeller.getBankDetails().setAccountHolderName(
+                    seller.getBankDetails().getAccountHolderName()
+            );
+            existingSeller.getBankDetails().setAccountNumber(
+                    seller.getBankDetails().getAccountNumber()
+            );
+            existingSeller.getBankDetails().setIfscCode(
+                    seller.getBankDetails().getIfscCode()
+            );
+        }
+
+        if (seller.getPickupAddress() != null
+                && seller.getPickupAddress().getAddress() != null
+                && seller.getPickupAddress().getPhone() != null
+                && seller.getPickupAddress().getCity() != null
+                && seller.getPickupAddress().getState() != null
+        ) {
+            existingSeller.getPickupAddress()
+                    .setAddress(seller.getPickupAddress().getAddress());
+            existingSeller.getPickupAddress().setCity(seller.getPickupAddress().getCity());
+            existingSeller.getPickupAddress().setState(seller.getPickupAddress().getState());
+            existingSeller.getPickupAddress().setPhone(seller.getPickupAddress().getPhone());
+            existingSeller.getPickupAddress().setPinCode(seller.getPickupAddress().getPinCode());
+        }
+
+        if (seller.getGSTIN() != null) {
+            existingSeller.setGSTIN(seller.getGSTIN());
+        }
+
+        return sellerRepository.save(existingSeller);
     }
 
     @Override
-    public void deleteSeller(Long id) {
-
+    public void deleteSeller(Long id) throws Exception {
+        Seller seller=getSellerById(id);
+        sellerRepository.delete(seller);
     }
 
     @Override
-    public Seller verifyEmail(String email, String otp) {
-        return null;
+    public Seller verifyEmail(String email, String otp) throws Exception {
+        Seller seller=getSellerByEmail(email);
+        seller.setEmailVerified(true);
+        return sellerRepository.save(seller);
     }
 
     @Override

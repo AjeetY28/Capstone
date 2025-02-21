@@ -39,7 +39,8 @@ public class AuthController {
 
 
     @PostMapping("/sent/login-signup-otp")
-    public ResponseEntity<ApiResponse> sentOtpHandler(@RequestBody VerificationCode req) throws Exception {
+    public ResponseEntity<ApiResponse> sentOtpHandler(
+            @RequestBody VerificationCode req) throws Exception {
 
 
         authService.sentLoginOtp(req.getEmail());
@@ -59,6 +60,6 @@ public class AuthController {
         AuthResponse authResponse =authService.signIn(req);
 
 
-        return ResponseEntity.ok(res);
+        return ResponseEntity.ok(authResponse);
     }
 }
