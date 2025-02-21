@@ -154,7 +154,12 @@ public class AuthServiceImpl implements AuthService{
 
         String SELLER_PREFIX="seller_";
         if(userName.startsWith(SELLER_PREFIX)){
-            userName=userName.substring(SELLER_PREFIX.length());
+            String actualUsername=userName.substring(SELLER_PREFIX.length());
+            Seller seller =sellerRepository.findByEmail(actualUsername);
+
+            if(seller!=null){
+                return buildUserDetails(seller.getEmail(),seller.getPassword(),seller.getRole());
+            }
         }
 
         if(userDetails==null)
