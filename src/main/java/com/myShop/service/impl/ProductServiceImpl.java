@@ -80,16 +80,18 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void deleteProduct(Long productId) {
-
+        Product product=findProductById(productId);
+        productRepository.delete(product);
     }
 
     @Override
     public Product updateProduct(Long productId, Product product) {
+
         return null;
     }
 
     @Override
-    public Product getProductById(Long productId) {
+    public Product findProductById(Long productId) {
         return null;
     }
 

@@ -12,7 +12,7 @@ public interface ProductService {
     public Product createProduct(CreateProductRequest req, Seller seller);
     public void deleteProduct(Long productId);
     public Product updateProduct(Long productId, Product product);
-    public Product getProductById(Long productId);
+    public Product findProductById(Long productId);
     List<Product> searchProduct();
     public Page<Product> getAllProduct(String Category,
                                        String brand,

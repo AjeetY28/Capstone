@@ -25,4 +25,5 @@ public interface ProductService {
                                        String stock,
                                        Integer pageNumber
                                        );
+    List<Product> getProductsBySellerId(Long sellerId);
 }

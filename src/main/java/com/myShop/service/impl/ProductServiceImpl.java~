@@ -63,27 +63,35 @@ public class ProductServiceImpl implements ProductService {
         product.setImages(req.getImages());
         product.setMrpPrice(req.getMrpPrice());
         product.setSizes(req.getSizes());
-        product.setDiscountPercent();
+        product.setDiscountPercent(discountPercentage);
         return productRepository.save(product);
 
     }
 
     private int calculateDiscountPercentage(int mrpPrice, int sellingPrice) {
-
+       if (mrpPrice<=0)
+       {
+           throw new IllegalArgumentException("Actual price must be greater then zero");
+       }
+       double discount=mrpPrice-sellingPrice;
+       double discountPercentage=(discount/mrpPrice)*100;
+       return (int) discountPercentage;
     }
 
     @Override
     public void deleteProduct(Long productId) {
-
+        Product product=findProductById(productId);
+        productRepository.delete(product);
     }
 
     @Override
     public Product updateProduct(Long productId, Product product) {
+        
         return null;
     }
 
     @Override
-    public Product getProductById(Long productId) {
+    public Product findProductById(Long productId) {
         return null;
     }
 
