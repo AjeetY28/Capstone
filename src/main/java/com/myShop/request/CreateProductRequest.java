@@ -14,8 +14,8 @@ public class CreateProductRequest {
     private String color;
     private List<String> images;
     private String category;
-    private String category1;
     private String category2;
+    private String category3;
 
     private String sizes;
 
