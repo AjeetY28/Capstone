@@ -1,0 +1,6 @@
+package com.myShop.request;
+
+public class CreateProductRequest {
+
+    private String title;
+}

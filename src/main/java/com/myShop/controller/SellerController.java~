@@ -3,11 +3,9 @@ package com.myShop.controller;
 
 import com.myShop.domain.AccountStatus;
 import com.myShop.entity.Seller;
-import com.myShop.entity.SellerReport;
 import com.myShop.entity.VerificationCode;
 import com.myShop.repository.VerificationCodeRepository;
 import com.myShop.request.LoginRequest;
-import com.myShop.response.ApiResponse;
 import com.myShop.response.AuthResponse;
 import com.myShop.service.AuthService;
 import com.myShop.service.EmailService;
@@ -39,7 +37,7 @@ public class SellerController {
         String otp=req.getOtp();
         String email=req.getEmail();
 
-        req.setEmail(email);
+        req.setEmail("seller_"+email);
 
         System.out.println(otp+" "+email);
         AuthResponse authResponse=authService.signIn(req);

@@ -5,6 +5,7 @@ import com.myShop.domain.AccountStatus;
 import com.myShop.domain.USER_ROLE;
 import com.myShop.entity.Address;
 import com.myShop.entity.Seller;
+import com.myShop.exceptions.SellerException;
 import com.myShop.repository.AddressRepository;
 import com.myShop.repository.SellerRepository;
 import com.myShop.service.SellerService;
@@ -55,10 +56,10 @@ public class SellerServiceImpl implements SellerService {
     }
 
     @Override
-    public Seller getSellerById(Long id) throws Exception {
+    public Seller getSellerById(Long id) throws SellerException {
 
         return sellerRepository.findById(id)
-                .orElseThrow(()->new Exception("Seller not find with the id....."+id));
+                .orElseThrow(()->new SellerException("Seller not find with the id....."+id));
     }
 
     @Override

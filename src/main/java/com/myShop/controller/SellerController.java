@@ -3,11 +3,10 @@ package com.myShop.controller;
 
 import com.myShop.domain.AccountStatus;
 import com.myShop.entity.Seller;
-import com.myShop.entity.SellerReport;
 import com.myShop.entity.VerificationCode;
+import com.myShop.exceptions.SellerException;
 import com.myShop.repository.VerificationCodeRepository;
 import com.myShop.request.LoginRequest;
-import com.myShop.response.ApiResponse;
 import com.myShop.response.AuthResponse;
 import com.myShop.service.AuthService;
 import com.myShop.service.EmailService;
@@ -83,7 +82,7 @@ public class SellerController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Seller>getSellerById(@PathVariable Long id)throws Exception{
+    public ResponseEntity<Seller>getSellerById(@PathVariable Long id)throws SellerException {
         Seller seller=sellerService.getSellerById(id);
         return new ResponseEntity<>(seller,HttpStatus.OK);
     }
