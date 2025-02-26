@@ -2,6 +2,7 @@ package com.myShop.service;
 
 import com.myShop.entity.Product;
 import com.myShop.entity.Seller;
+import com.myShop.exceptions.ProductException;
 import com.myShop.request.CreateProductRequest;
 import org.springframework.data.domain.Page;
 
@@ -10,10 +11,10 @@ import java.util.List;
 public interface ProductService {
 
     public Product createProduct(CreateProductRequest req, Seller seller);
-    public void deleteProduct(Long productId);
-    public Product updateProduct(Long productId, Product product);
-    public Product findProductById(Long productId);
-    List<Product> searchProduct();
+    public void deleteProduct(Long productId) throws ProductException;
+    public Product updateProduct(Long productId, Product product) throws ProductException;
+    public Product findProductById(Long productId) throws ProductException;
+    List<Product> searchProduct(String query);
     public Page<Product> getAllProduct(String Category,
                                        String brand,
                                        String colors,
