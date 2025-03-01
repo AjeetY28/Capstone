@@ -1,5 +1,6 @@
 package com.myShop.request;
 
+import com.myShop.entity.Category;
 import lombok.Data;
 
 import java.util.List;
@@ -13,9 +14,9 @@ public class CreateProductRequest {
     private int sellingPrice;
     private String color;
     private List<String> images;
-    private String category;
-    private String category1;
-    private String category2;
+    private Category category;
+    private Category category2;
+    private Category category3;
 
     private String sizes;
 

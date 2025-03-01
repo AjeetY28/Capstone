@@ -49,7 +49,7 @@ public class ProductServiceImpl implements ProductService {
             category.setParentCategory(category1);
             category2=categoryRepository.save(category);
         }
-        Category category3=categoryRepository.findByCategoryId(req.getCategory2());
+        Category category3=categoryRepository.findByCategoryId(req.getCategory3());
         if (category3 == null) {
             Category category = new Category();
             category.setCategoryId(req.getCategory3());
@@ -114,7 +114,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Page<Product> getAllProduct(String category, String brand, String colors, String sizes, Integer minPrice, Integer maxPrice, Integer minDiscount, String sort, String stock, Integer pageNumber) {
+    public Page<Product> getAllProduct(String category, String brand, String color, String sizes, Integer minPrice, Integer maxPrice, Integer minDiscount, String sort, String stock, Integer pageNumber) {
         Specification<Product> spec=(root, query, criteriaBuilder) -> {
             List<Predicate> predicates=new ArrayList<>();
 
@@ -124,10 +124,10 @@ public class ProductServiceImpl implements ProductService {
                 predicates.add(criteriaBuilder.equal(categoryJoin.get("categoryId"),category));
             }
 
-            if(colors!=null && !colors.isEmpty())
+            if(color!=null && !color.isEmpty())
             {
 //                System.out.println("Color "+colors);
-                predicates.add(criteriaBuilder.equal(root.get("colors"),colors));
+                predicates.add(criteriaBuilder.equal(root.get("color"),color));
             }
             if(sizes != null && !sizes.isEmpty()){
                 predicates.add(criteriaBuilder.equal(root.get("sizes"),sizes));
