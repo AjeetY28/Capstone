@@ -10,10 +10,10 @@ import java.util.Set;
 @Entity
 @Getter
 @Setter
-@Data
+//@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode
+
 public class Cart {
 
 

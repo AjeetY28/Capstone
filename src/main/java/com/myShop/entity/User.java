@@ -15,6 +15,7 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+//@EqualsAndHashCode
 @EqualsAndHashCode
 public class User {
 

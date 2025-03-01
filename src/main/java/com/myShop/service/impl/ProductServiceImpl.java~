@@ -80,7 +80,8 @@ public class ProductServiceImpl implements ProductService {
     private int calculateDiscountPercentage(int mrpPrice, int sellingPrice) {
        if (mrpPrice<=0)
        {
-           throw new IllegalArgumentException("Actual price must be greater then zero");
+//           throw new IllegalArgumentException("Actual price must be greater then zero");
+           return 0;
        }
        double discount=mrpPrice-sellingPrice;
        double discountPercentage=(discount/mrpPrice)*100;
@@ -114,7 +115,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Page<Product> getAllProduct(String category, String brand, String colors, String sizes, Integer minPrice, Integer maxPrice, Integer minDiscount, String sort, String stock, Integer pageNumber) {
+    public Page<Product> getAllProduct(String category, String brand, String color, String sizes, Integer minPrice, Integer maxPrice, Integer minDiscount, String sort, String stock, Integer pageNumber) {
         Specification<Product> spec=(root, query, criteriaBuilder) -> {
             List<Predicate> predicates=new ArrayList<>();
 
@@ -124,10 +125,10 @@ public class ProductServiceImpl implements ProductService {
                 predicates.add(criteriaBuilder.equal(categoryJoin.get("categoryId"),category));
             }
 
-            if(colors!=null && !colors.isEmpty())
+            if(color!=null && !color.isEmpty())
             {
 //                System.out.println("Color "+colors);
-                predicates.add(criteriaBuilder.equal(root.get("colors"),colors));
+                predicates.add(criteriaBuilder.equal(root.get("color"),color));
             }
             if(sizes != null && !sizes.isEmpty()){
                 predicates.add(criteriaBuilder.equal(root.get("sizes"),sizes));

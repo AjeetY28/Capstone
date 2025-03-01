@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class CartServiceImpl implements CartService,ca {
+public class CartServiceImpl implements CartService {
 
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
@@ -34,7 +34,7 @@ public class CartServiceImpl implements CartService,ca {
 
             int totalPrice=quantity*product.getSellingPrice();
             cartItem.setSellingPrice(totalPrice);
-
+            cartItem.setMrpPrice(quantity*product.getMrpPrice());
 
             cart.getCartItems().add(cartItem);
             cartItem.setCart(cart);
@@ -65,14 +65,15 @@ public class CartServiceImpl implements CartService,ca {
         cart.setTotalSellingPrice(totalDiscountPrice);
         cart.setDiscount(calculateDiscountPercentage(totalPrice,totalDiscountPrice));
         cart.setTotalItem(totalItem);
-        return null;
+        return cart;
     }
 
 
     private int calculateDiscountPercentage(int mrpPrice, int sellingPrice) {
         if (mrpPrice<=0)
         {
-            throw new IllegalArgumentException("Actual price must be greater then zero");
+//            throw new IllegalArgumentException("Actual price must be greater then zero");
+            return 0;
         }
         double discount=mrpPrice-sellingPrice;
         double discountPercentage=(discount/mrpPrice)*100;
