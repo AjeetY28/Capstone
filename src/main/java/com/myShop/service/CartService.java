@@ -1,0 +1,17 @@
+package com.myShop.service;
+
+import com.myShop.entity.Cart;
+import com.myShop.entity.CartItem;
+import com.myShop.entity.Product;
+import com.myShop.entity.User;
+
+public interface CartService {
+
+    public CartItem addCartItem(
+            User user,
+            Product product,
+            String size,
+            int quantity);
+
+    public Cart findUserCart(User user);
+}
