@@ -1,0 +1,9 @@
+package com.myShop.service;
+
+import com.myShop.entity.SellerReport;
+
+public interface SellerReportService {
+
+    SellerReport getSellerReport(String sellerId);
+    SellerReport updateSellerReport(SellerReport sellerReport);
+}

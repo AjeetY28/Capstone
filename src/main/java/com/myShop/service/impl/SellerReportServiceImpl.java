@@ -1,0 +1,17 @@
+package com.myShop.service.impl;
+
+import com.myShop.entity.SellerReport;
+import com.myShop.service.SellerReportService;
+
+public class SellerReportServiceImpl implements SellerReportService {
+
+    @Override
+    public SellerReport getSellerReport(String sellerId) {
+        return null;
+    }
+
+    @Override
+    public SellerReport updateSellerReport(SellerReport sellerReport) {
+        return null;
+    }
+}
