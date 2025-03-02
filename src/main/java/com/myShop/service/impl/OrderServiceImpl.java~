@@ -116,9 +116,15 @@ public class OrderServiceImpl implements OrderService {
 
         if(!order.getUser().getId().equals(user.getId()))
         {
-            throw new Exception("You  ");
+            throw new Exception("You don't have access to cancel this order");
         }
         order.setOrderStaus(OrderStatus.CANCELLED);
         return orderRepository.save(order);
+    }
+
+    @Override
+    public OrderItem findById(Long id) throws Exception {
+        return orderItemRepository.findById(id).orElseThrow(()->
+                new Exception("Order item not found"));
     }
 }

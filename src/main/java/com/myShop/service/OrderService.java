@@ -1,10 +1,7 @@
 package com.myShop.service;
 
 import com.myShop.domain.OrderStatus;
-import com.myShop.entity.Address;
-import com.myShop.entity.Cart;
-import com.myShop.entity.Order;
-import com.myShop.entity.User;
+import com.myShop.entity.*;
 
 import java.util.List;
 import java.util.Set;
@@ -17,4 +14,6 @@ public interface OrderService {
     List<Order> sellersOrder(Long sellerId);
     Order updateOrderStatus(Long orderId, OrderStatus orderStatus) throws Exception;
     Order cancelOrder(Long orderId,User user) throws Exception;
+    OrderItem findById(Long id) throws Exception;
+
 }
