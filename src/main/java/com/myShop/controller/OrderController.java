@@ -23,6 +23,7 @@ public class OrderController {
     private final UserService userService;
     private final CartService cartService;
     private final SellerService sellerService;
+    private final SellerReportService sellerReportService;
 //    private final PaymentService paymentService;
 
 
@@ -88,10 +89,13 @@ public class OrderController {
         User user=userService.findUserByJwtToken(jwt);
         Order order=orderService.cancelOrder(orderId,user);
 
-//        when sellerReport service will created
-//        Seller seller=sellerService.getSellerById(order.getSellerId());
-//        SellerReport report=se
 
+        Seller seller=sellerService.getSellerById(order.getSellerId());
+        SellerReport report=sellerReportService.getSellerReport(seller);
+
+        report.setCancelledOrders(report.getCancelledOrders()+1);
+        report.setTotalRefunds(report.getTotalRefunds()+order.getTotalSellingPrince());
+        sellerReportService.updateSellerReport(report);
         return ResponseEntity.ok(order);
     }
 
