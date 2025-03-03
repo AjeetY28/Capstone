@@ -5,6 +5,7 @@ import com.myShop.entity.PaymentOrder;
 import com.myShop.entity.User;
 import com.razorpay.PaymentLink;
 import com.razorpay.RazorpayException;
+import com.stripe.exception.StripeException;
 
 import java.util.Set;
 
@@ -16,5 +17,5 @@ public interface PaymentService {
     Boolean ProceedPaymentOrder(PaymentOrder paymentOrder,String paymentId,String paymentLinkedId) throws RazorpayException;
 
     PaymentLink createRazorpayPaymentLink(User user,Long amount,Long orderId) throws RazorpayException;
-    String createStripePaymentLink(User user,Long amount,Long orderId);
+    String createStripePaymentLink(User user,Long amount,Long orderId) throws StripeException;
 }

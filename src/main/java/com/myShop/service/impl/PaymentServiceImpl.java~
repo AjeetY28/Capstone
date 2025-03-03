@@ -149,7 +149,7 @@ public class PaymentServiceImpl implements PaymentService {
                                         SessionCreateParams
                                                 .LineItem.PriceData
                                                 .ProductData
-                                                .builder().setName("Ecommerce")
+                                                .builder().setName("Eccommerce")
                                                 .build()
                                 ).build()
                         ).build()
