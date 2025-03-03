@@ -13,6 +13,7 @@ import com.razorpay.PaymentLink;
 import com.razorpay.RazorpayClient;
 import com.razorpay.RazorpayException;
 import lombok.RequiredArgsConstructor;
+import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
@@ -85,8 +86,42 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public PaymentLink createRazorpayPaymentLink(User user, Long amount, Long orderId) {
-        return null;
+    public PaymentLink createRazorpayPaymentLink(User user, Long amount, Long orderId) throws RazorpayException {
+        amount=amount*100;
+
+        try{
+            RazorpayClient razorpay=new RazorpayClient(apiKey,apiSecret);
+            JSONObject paymentLinkRequest=new JSONObject();
+            paymentLinkRequest.put("amount",amount);
+            paymentLinkRequest.put("currency","INR");
+
+            JSONObject customer=new JSONObject();
+            customer.put("name",user.getName());
+            customer.put("email",user.getEmail());
+            paymentLinkRequest.put("customer",customer);
+
+            JSONObject notify=new JSONObject();
+            notify.put("email",true);
+            notify.put("sms",true);
+            paymentLinkRequest.put("notify",notify);
+
+            paymentLinkRequest.put("callback_url",
+                    "http://localhost:3000/payment-success/"+orderId);
+
+            paymentLinkRequest.put("callback_method","get");
+
+            PaymentLink paymentLink=razorpay.paymentLink.create(paymentLinkRequest);
+
+            String paymentLinkUrl=paymentLink.get("short_url");
+            String paymentLinkId=paymentLink.get("id");
+
+            return paymentLink;
+
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            throw new RazorpayException(e.getMessage());
+        }
+
     }
 
     @Override
