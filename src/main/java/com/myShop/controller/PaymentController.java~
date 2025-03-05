@@ -19,6 +19,7 @@ public class PaymentController {
     private final SellerService sellerService;
     private final OrderService orderService;
     private final SellerReportService sellerReportService;
+    private final 
 
 
     @GetMapping("/{paymentId}")
@@ -45,7 +46,7 @@ public class PaymentController {
                 Seller seller=sellerService.getSellerById(order.getSellerId());
                 SellerReport report=sellerReportService.getSellerReport(seller);
                 report.setTotalOrders(report.getTotalOrders()+1);
-                report.setTotalEarning(report.getTotalEarning()+order.getTotalSellingPrince());
+                report.setTotalEarning(report.getTotalEarning()+order.getTotalSellingPrince());//check that
                 report.setTotalSales(report.getTotalSales()+order.getOrderItems().size());
                 sellerReportService.updateSellerReport(report);
 
