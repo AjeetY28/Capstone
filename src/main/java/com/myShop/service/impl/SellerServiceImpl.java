@@ -151,7 +151,7 @@ public class SellerServiceImpl implements SellerService {
     }
 
     @Override
-    public Seller updateSellerStatus(Long sellerId, AccountStatus status) throws Exception {
+    public Seller updateSellerAccountStatus(Long sellerId, AccountStatus status) throws Exception {
         Seller seller=getSellerById(sellerId);
         seller.setAccountStatus(status);
         return sellerRepository.save(seller);
