@@ -29,6 +29,8 @@ public class Coupon {
 
     private LocalDateTime validityEndDate;
 
+    private double minimumOrderValue;
+
     private boolean isActive=true;
 
     @ManyToMany(mappedBy = "usedCoupons")
