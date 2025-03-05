@@ -1,0 +1,7 @@
+package com.myShop.repository;
+
+import com.myShop.entity.Home;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface HomeCategoryRepository extends JpaRepository<Home,Long> {
+}
