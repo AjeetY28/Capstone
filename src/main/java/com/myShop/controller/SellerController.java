@@ -43,7 +43,7 @@ public class SellerController {
 
         req.setEmail("seller_"+email);
 
-        System.out.println(otp+" "+email);
+//        System.out.println(otp+" "+email);
         AuthResponse authResponse=authService.signIn(req);
 
         return ResponseEntity.ok(authResponse);
