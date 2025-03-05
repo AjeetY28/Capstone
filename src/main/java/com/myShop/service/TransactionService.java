@@ -1,0 +1,14 @@
+package com.myShop.service;
+
+import com.myShop.entity.Order;
+import com.myShop.entity.Seller;
+import com.myShop.entity.Transaction;
+
+import java.util.List;
+
+public interface TransactionService {
+
+    Transaction createTransaction(Order order);
+    List<Transaction> getTransactionsBySellerId(Seller seller);
+    List<Transaction> getAllTransactions();
+}
