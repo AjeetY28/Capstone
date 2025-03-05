@@ -45,5 +45,4 @@ public class DealController {
         return new ResponseEntity<>(apiResponse,HttpStatus.ACCEPTED);
     }
 
-
 }
