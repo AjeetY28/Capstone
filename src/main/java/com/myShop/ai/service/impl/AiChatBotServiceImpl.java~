@@ -115,7 +115,7 @@ public class AiChatBotServiceImpl implements AiChatBotService {
         JSONObject content=firstCandidate.getJSONObject("content");
         JSONArray parts=content.getJSONArray("parts");
         JSONObject firstPart=parts.getJSONObject(0);
-        JSONObject text=firstPart.getJSONObject("text");
+        String text=firstPart.getString("text");
 
         //Prepare and Return the API response
         ApiResponse res=new ApiResponse();
@@ -248,7 +248,7 @@ public class AiChatBotServiceImpl implements AiChatBotService {
                                         )
                                 )
                                 .put("required",new JSONArray()
-                                        .put("prduct")
+                                        .put("product")
                                 )
                         )
                 );

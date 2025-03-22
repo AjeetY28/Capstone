@@ -104,7 +104,7 @@ public class OrderController {
         return new ResponseEntity<>(orderItem,HttpStatus.ACCEPTED);
     }
 
-    @PutMapping("{orderId/cancel}")
+    @PutMapping("{orderId}/cancel")
     public ResponseEntity<Order>cancelOrder(
             @PathVariable Long orderId,
             @RequestHeader("Authorization") String jwt

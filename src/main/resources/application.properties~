@@ -16,4 +16,4 @@ spring.mail.password=cylq vhph vlpd grab
 spring.mail.properties.mail.smtp.auth=true
 spring.mail.properties.mail.smtp.starttls.enable=true
 
-gemini.api.key=AIzaSyC_ediYsYhtobcMgi8z7bzqVJdZKGs59_g
+gemini.api.key=

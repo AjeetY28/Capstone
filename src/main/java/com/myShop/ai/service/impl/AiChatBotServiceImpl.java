@@ -244,11 +244,11 @@ public class AiChatBotServiceImpl implements AiChatBotService {
                                 .put("properties",new JSONObject()
                                         .put("product",new JSONObject()
                                                 .put("type","STRING")
-                                                .put("description","The Product Details like, Product title, product id, prduct color, product size, selling price, mrp price, rating extra...")
+                                                .put("description","The Product Details like, Product title, product id, product color, product size, selling price, mrp price, rating extra...")
                                         )
                                 )
                                 .put("required",new JSONArray()
-                                        .put("prduct")
+                                        .put("product")
                                 )
                         )
                 );
