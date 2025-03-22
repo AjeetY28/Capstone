@@ -1,0 +1,4 @@
+package com.myShop.mapper;
+
+public class UserMapper {
+}

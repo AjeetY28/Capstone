@@ -1,5 +1,6 @@
 package com.myShop.mapper;
 
+import com.myShop.domain.OrderStatus;
 import com.myShop.dto.OrderDto;
 import com.myShop.dto.OrderHistory;
 import com.myShop.dto.OrderItemDto;
@@ -8,6 +9,7 @@ import com.myShop.entity.OrderItem;
 import com.myShop.entity.User;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class OrderMapper {
 
@@ -75,8 +77,31 @@ public class OrderMapper {
         }
 
         OrderHistory orderHistory = new OrderHistory();
+        //Set user
+        orderHistory.setUser(UserMapper.toUserDto(user));
 
+        // Filter current orders (those that are not DELIVERED or CANCELLED)
+        List<OrderDto> currentOrders = orders.stream()
+                .filter(order->order.getOrderStaus() != OrderStatus.DELIVERED && order.getOrderStaus() != OrderStatus.CANCELLED)
+                .map(OrderMapper::toOrderDto)
+                .collect(Collectors.toList());
 
+        orderHistory.setCurrentOrders(currentOrders);
+
+        //Set total Orders
+        orderHistory.setTotalOrders(orders.size());
+
+        //Set cancelled orders
+        int cancelledOrders=(int)orders.stream()
+                .filter(order -> order.getOrderStaus() == OrderStatus.CANCELLED)
+                .count();
+        orderHistory.setCancelledOrders(cancelledOrders);
+
+        //Set completed orders(those that are DELIVERED)
+        int completedOrders=(int)orders.stream()
+                .filter(order -> order.getOrderStaus() == OrderStatus.DELIVERED)
+                .count();
+        orderHistory.setCompletedOrders(completedOrders);
 
         return orderHistory;
     }
