@@ -1,0 +1,4 @@
+package com.myShop.dto;
+
+public class ProductDto {
+}

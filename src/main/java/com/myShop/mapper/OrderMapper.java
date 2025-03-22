@@ -1,0 +1,18 @@
+package com.myShop.mapper;
+
+import com.myShop.dto.OrderItemDto;
+import com.myShop.entity.OrderItem;
+
+public class OrderMapper {
+
+    public static OrderItemDto toOrderItemDto(OrderItem orderItem){
+        if(orderItem==null){
+            return null;
+        }
+
+        OrderItemDto orderItemDto=new OrderItemDto();
+        orderItemDto.setId(orderItem.getId());
+        orderItemDto.setProduct(ProductMapper.toProductDto(orderItem.getProduct()));
+
+    }
+}
