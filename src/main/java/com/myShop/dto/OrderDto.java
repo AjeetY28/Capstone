@@ -1,43 +1,30 @@
-package com.myShop.entity;
-
+package com.myShop.dto;
 
 import com.myShop.domain.OrderStatus;
 import com.myShop.domain.PaymentStatus;
-import jakarta.persistence.*;
-import lombok.*;
+import com.myShop.entity.Address;
+import com.myShop.entity.PaymentDetails;
+import lombok.Data;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
-@Getter
-@Setter
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-@EqualsAndHashCode
-@Table(name = "orders")
-public class Order {
+public class OrderDto {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     private String orderId;
 
-    @ManyToOne
-    private User user;
+    private UserDto user;
 
-    private long sellerId;
+    private Long sellerId;
 
-    @OneToMany(mappedBy = "order",cascade = CascadeType.ALL,orphanRemoval = true)
-    private List<OrderItem> orderItems=new ArrayList<>();
+    private List<OrderItemDto> orderItems=new ArrayList<>();
 
-    @ManyToOne
     private Address shippingAddress;
 
-    @Embedded
     private PaymentDetails paymentDetails=new PaymentDetails();
 
     private double totalMrpPrice;
@@ -46,13 +33,14 @@ public class Order {
 
     private Integer discount;
 
-    private OrderStatus orderStaus;
+    private OrderStatus orderStatus;
 
     private int totalItem;
 
     private PaymentStatus paymentStatus=PaymentStatus.PENDING;
 
     private LocalDateTime orderDate=LocalDateTime.now();
+
     private LocalDateTime deliverDate=orderDate.plusDays(7);
 
 }
