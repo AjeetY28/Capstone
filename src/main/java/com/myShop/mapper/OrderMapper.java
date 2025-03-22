@@ -71,7 +71,7 @@ public class OrderMapper {
     }
 
     //Maps OderHistory to OrderHistoryDto
-    public static OrderHistory toOrderHistoryDto(List<Order> orders, User user) {
+    public static OrderHistory toOrderHistory(List<Order> orders, User user) {
         if (orders == null) {
             return null;
         }

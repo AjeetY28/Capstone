@@ -3,8 +3,11 @@ package com.myShop.ai.service.impl;
 import com.myShop.ai.service.AiChatBotService;
 import com.myShop.entity.Cart;
 import com.myShop.entity.Order;
+import com.myShop.entity.Product;
 import com.myShop.entity.User;
 import com.myShop.exceptions.ProductException;
+import com.myShop.mapper.OrderMapper;
+import com.myShop.mapper.ProductMapper;
 import com.myShop.repository.CartRepository;
 import com.myShop.repository.OrderRepository;
 import com.myShop.repository.ProductRepository;
@@ -43,8 +46,82 @@ public class AiChatBotServiceImpl implements AiChatBotService {
         System.out.println("-------- "+prompt);
 
         FunctionResponse functionResponse=getFunctionResponse(prompt,productId,userId);
+        System.out.println("--------- "+functionResponse);
 
-        return null;
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        //Construct the request body
+        String body=new JSONObject()
+                .put("content",new JSONArray()
+                        .put(new JSONObject()
+                                .put("role","user")
+                                .put("parts",new JSONArray()
+                                        .put(new JSONObject()
+                                                .put("text",prompt)
+                                        )
+                                )
+                        )
+                        .put(new JSONObject()
+                                .put("role","model")
+                                .put("parts",new JSONArray()
+                                        .put(new JSONObject()
+                                                .put("functionCall",new JSONObject()
+                                                        .put("name",functionResponse.getFunctionName())
+                                                        .put("args",new JSONObject()
+                                                                .put("cart",functionResponse.getUserCart()!=null? functionResponse.getUserCart().getUser():null)
+                                                                .put("order",functionResponse.getOrderHistory()!=null? functionResponse.getOrderHistory():null)
+                                                                .put("product", functionResponse.getProduct()!=null? ProductMapper.toProductDto(functionResponse.getProduct()):null)
+                                                        )
+                                                )
+                                        )
+                                )
+                        )
+                        .put(new JSONObject()
+                                .put("role","function")
+                                .put("parts",new JSONArray()
+                                        .put(new JSONObject()
+                                                .put("functionResponse",new JSONObject()
+                                                        .put("name",functionResponse.getFunctionName())
+                                                        .put("response",new JSONObject()
+                                                                .put("name",functionResponse.getFunctionName())
+                                                                .put("content",functionResponse)
+                                                        )
+                                                )
+                                        )
+                                )
+                        )
+                ).put("tools",new JSONArray()
+                        .put(new JSONObject()
+                                .put("functionDeclarations",createFunctionDeclarations())
+                        )
+                )
+                .toString();
+
+        //Make the API request
+        HttpEntity<String> request=new HttpEntity<>(body,headers);
+        RestTemplate restTemplate=new RestTemplate();
+        ResponseEntity<String> response=restTemplate.postForEntity(GEMINI_API_URL, request, String.class);
+
+        //Process the Response
+        String responseBody=response.getBody();
+        JSONObject jsonObject=new JSONObject(responseBody);
+
+        //Extract the first candidate
+        JSONArray candidates=jsonObject.getJSONArray("candidates");
+        JSONObject firstCandidate=candidates.getJSONObject(0);
+
+        //Extract the text
+        JSONObject content=firstCandidate.getJSONObject("content");
+        JSONArray parts=content.getJSONArray("parts");
+        JSONObject firstPart=parts.getJSONObject(0);
+        String text=firstPart.getString("text");
+
+        //Prepare and Return the API response
+        ApiResponse res=new ApiResponse();
+        res.setMessage(text);
+
+        return res;
     }
 
     private FunctionResponse getFunctionResponse(String prompt, Long productId, Long userId) throws ProductException {
@@ -107,8 +184,21 @@ public class AiChatBotServiceImpl implements AiChatBotService {
                 break;
             case "getUsersOrder":
                 List<Order> orders=orderRepository.findByUserId(userId);
-                res.setOrderHistory(OrderMa);
+                res.setOrderHistory(OrderMapper.toOrderHistory(orders,user));
+                System.out.println("order history: "+OrderMapper.toOrderHistory(orders,user));
+                break;
+            case "getProductDetails":
+                Product product=productRepository.findById(productId).orElseThrow(
+                        ()->new ProductException("Product not found")
+                );
+                res.setProduct(product);
+                break;
+
+            default:
+                throw new IllegalArgumentException("Unsupported function: " + functionName);
         }
+
+        return res;
     }
 
     private JSONArray createFunctionDeclarations() {

@@ -102,7 +102,7 @@ public class OrderMapper {
                 .filter(order -> order.getOrderStaus() == OrderStatus.DELIVERED)
                 .count();
         orderHistory.setCompletedOrders(completedOrders);
-        
+
         return orderHistory;
     }
 }
