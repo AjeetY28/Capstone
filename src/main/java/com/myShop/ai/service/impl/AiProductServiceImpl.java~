@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class AiProductServiceImpl implements AiProductService {
 
-    @Value("{gemini.api.key}")
+    @Value()
     private static String API_KEY;
 
     @Override
