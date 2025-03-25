@@ -3,6 +3,8 @@ package com.myShop.controller;
 import com.myShop.domain.USER_ROLE;
 import com.myShop.entity.User;
 import com.myShop.entity.VerificationCode;
+import com.myShop.exceptions.SellerException;
+import com.myShop.exceptions.UserException;
 import com.myShop.repository.UserRepository;
 import com.myShop.request.LoginOtpRequest;
 import com.myShop.request.LoginRequest;
@@ -10,7 +12,10 @@ import com.myShop.response.ApiResponse;
 import com.myShop.response.AuthResponse;
 import com.myShop.response.SignupRequest;
 import com.myShop.service.AuthService;
+import jakarta.mail.MessagingException;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,8 +29,12 @@ public class AuthController {
 
     private final UserRepository userRepository;
     private final AuthService authService;
+
+
     @PostMapping("/signup")
-    public ResponseEntity<AuthResponse> createUserHandler(@RequestBody SignupRequest req) throws Exception {
+    public ResponseEntity<AuthResponse> createUserHandler(
+            @Valid
+            @RequestBody SignupRequest req) throws SellerException {
 
 
         String jwt=authService.createUser(req);
@@ -35,32 +44,33 @@ public class AuthController {
         res.setMessage("Register Success");
         res.setRole(USER_ROLE.ROLE_CUSTOMER);
 
-        return ResponseEntity.ok(res);
+        return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
 
     @PostMapping("/sent/login-signup-otp")
     public ResponseEntity<ApiResponse> sentOtpHandler(
-            @RequestBody LoginOtpRequest req) throws Exception {
+            @RequestBody VerificationCode req) throws MessagingException, UserException {
 
 
-        authService.sentLoginOtp(req.getEmail(),req.getRole());
+        authService.sentLoginOtp(req.getEmail());
 
         ApiResponse res=new ApiResponse();
 
         res.setMessage("Otp sent Successfully");
 
-        return ResponseEntity.ok(res);
+        return new ResponseEntity<>(res,HttpStatus.CREATED);
     }
 
 
     @PostMapping("/singing")
-    public ResponseEntity<AuthResponse> loginHandler(@RequestBody LoginRequest req) throws Exception {
+    public ResponseEntity<AuthResponse> loginHandler(
+            @RequestBody LoginRequest req) throws SellerException {
 
 
         AuthResponse authResponse =authService.signIn(req);
 
 
-        return ResponseEntity.ok(authResponse);
+        return new ResponseEntity<>(authResponse, HttpStatus.OK);
     }
 }
