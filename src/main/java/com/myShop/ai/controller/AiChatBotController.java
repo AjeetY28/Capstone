@@ -38,9 +38,7 @@ public class AiChatBotController {
         {
             user=userService.findUserByJwtToken(jwt);
         }
-
         ApiResponse apiResponse=aiChatBotService.aiChatBot(message,productId,user.getId());
-
         return ResponseEntity.ok(apiResponse);
     }
 }
