@@ -3,8 +3,10 @@ package com.myShop.controller;
 
 import com.myShop.entity.Product;
 import com.myShop.entity.Seller;
+import com.myShop.exceptions.CategoryNotFoundException;
 import com.myShop.exceptions.ProductException;
 import com.myShop.exceptions.SellerException;
+import com.myShop.exceptions.UserException;
 import com.myShop.request.CreateProductRequest;
 import com.myShop.service.ProductService;
 import com.myShop.service.SellerService;
@@ -17,7 +19,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/seller/products")
+@RequestMapping("/seller/products")
 public class SellerProductController {
 
     private final ProductService productService;
@@ -26,7 +28,7 @@ public class SellerProductController {
     @GetMapping()
     public ResponseEntity<List<Product>> getProductBySellerId(
             @RequestHeader("Authorization") String jwt)
-            throws Exception {
+            throws SellerException,ProductException {
         Seller seller = sellerService.getSellerProfile(jwt);
 
         List<Product> products = productService.getProductsBySellerId(seller.getId());
@@ -36,7 +38,10 @@ public class SellerProductController {
     @PostMapping()
     public ResponseEntity<Product> createProduct(
             @RequestBody CreateProductRequest request,
-            @RequestHeader("Authorization") String jwt) throws Exception {
+            @RequestHeader("Authorization") String jwt) throws UserException,
+            ProductException, CategoryNotFoundException, SellerException {
+
+
         Seller seller = sellerService.getSellerProfile(jwt);
         Product product = productService.createProduct(request, seller);
         return new ResponseEntity<>(product, HttpStatus.CREATED);
@@ -58,10 +63,24 @@ public class SellerProductController {
     public ResponseEntity<Product> updateProduct(
             @PathVariable Long productId,
             @RequestBody Product product) throws ProductException
-    {
+        {
+            try {
+                Product updatedProduct = productService.updateProduct(productId, product);
+                return new ResponseEntity<>(updatedProduct, HttpStatus.OK);
+            } catch (ProductException e) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        }
 
-            Product updatedProduct = productService.updateProduct(productId, product);
-            return new ResponseEntity<>(updatedProduct, HttpStatus.OK);
-
+    @PatchMapping("/{productId}/stock")
+    public ResponseEntity<Product>updateProductStock(
+            @PathVariable Long productId
+    ){
+        try{
+            Product updatedProduct =productService.updateProductStock(productId);
+            return new ResponseEntity<>(updatedProduct,HttpStatus.OK);
+        }catch (ProductException e){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 }
