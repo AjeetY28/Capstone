@@ -2,11 +2,15 @@ package com.myShop.service.impl;
 
 import com.myShop.entity.CartItem;
 import com.myShop.entity.User;
+import com.myShop.exceptions.CartItemException;
+import com.myShop.exceptions.UserException;
 import com.myShop.repository.CartItemRepository;
 import com.myShop.service.CartItemService;
 import com.myShop.service.CartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -16,7 +20,7 @@ public class CartItemServiceImpl implements CartItemService {
     private final CartService cartService;
 
     @Override
-    public CartItem updateCartItem(Long userId, Long id, CartItem cartItem) throws Exception {
+    public CartItem updateCartItem(Long userId, Long id, CartItem cartItem) throws CartItemException, UserException {
         CartItem item=findCartItemById(id);
 
         User cartItemUser=item.getCart().getUser();
@@ -28,27 +32,32 @@ public class CartItemServiceImpl implements CartItemService {
             item.setSellingPrice(item.getQuantity()*item.getProduct().getSellingPrice());
             return cartItemRepository.save(item);
         }
-        throw new Exception("You can't update this cart item");
+        throw new CartItemException("You can't update this cart item");
     }
 
     @Override
-    public void removeCartItem(Long userId, Long cartItemId) throws Exception {
+    public void removeCartItem(Long userId, Long cartItemId) throws  CartItemException, UserException {
+
         CartItem item=findCartItemById(cartItemId);
 
         User cartItemUser=item.getCart().getUser();
 
         if(cartItemUser.getId().equals(userId)){
-            cartItemRepository.delete(item);
+            cartItemRepository.deleteById(item.getId());
         }
         else {
-            throw new Exception("You can't remove this item");
+            throw new UserException("You can't remove this item");
         }
 
     }
 
     @Override
-    public CartItem findCartItemById(Long id) throws Exception {
+    public CartItem findCartItemById(Long id) throws CartItemException {
+        Optional<CartItem> opt=cartItemRepository.findById(id);
 
-        return cartItemRepository.findById(id).orElseThrow(()->new Exception("Cart item not found"));
+        if(opt.isPresent()) {
+            return opt.get();
+        }
+        throw new CartItemException("cartItem not found with id : "+id);
     }
 }

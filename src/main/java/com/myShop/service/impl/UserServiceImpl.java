@@ -2,6 +2,7 @@ package com.myShop.service.impl;
 
 import com.myShop.config.JwtProvider;
 import com.myShop.entity.User;
+import com.myShop.exceptions.UserException;
 import com.myShop.repository.UserRepository;
 import com.myShop.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +17,7 @@ public class UserServiceImpl implements UserService {
     private final JwtProvider jwtProvider;
 
     @Override
-    public User findUserByJwtToken(String jwt) throws Exception {
+    public User findUserByJwtToken(String jwt) throws UserException {
 
         String email=jwtProvider.getEmailFromJwtToken(jwt);
         return this.findUserByEmail(email);
@@ -24,11 +25,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findUserByEmail(String email) throws Exception {
+    public User findUserByEmail(String email) throws UserException {
         User user=userRepository.findByEmail(email);
         if(user==null)
         {
-            throw new Exception("user not found with email - "+email);
+            throw new UserException("user not found with email - "+email);
         }
         return user;
     }

@@ -5,7 +5,9 @@ import com.myShop.entity.Cart;
 import com.myShop.entity.CartItem;
 import com.myShop.entity.Product;
 import com.myShop.entity.User;
+import com.myShop.exceptions.CartItemException;
 import com.myShop.exceptions.ProductException;
+import com.myShop.exceptions.UserException;
 import com.myShop.request.AddItemRequest;
 import com.myShop.response.ApiResponse;
 import com.myShop.service.CartItemService;
@@ -30,7 +32,7 @@ public class CartController {
     @GetMapping
     public ResponseEntity<Cart> findUserCartHandler(
             @RequestHeader("Authorization") String jwt)
-            throws Exception {
+            throws UserException {
 
         User user=userService.findUserByJwtToken(jwt);
 
@@ -43,7 +45,7 @@ public class CartController {
     public ResponseEntity<CartItem>addItemToCart(
             @RequestBody AddItemRequest req,
             @RequestHeader("Authorization") String jwt
-            ) throws ProductException,Exception{
+            ) throws ProductException,UserException{
 
         User user=userService.findUserByJwtToken(jwt);
 
@@ -64,7 +66,7 @@ public class CartController {
     public ResponseEntity<ApiResponse>deleteCartItemHandler(
         @PathVariable Long cartItemId,
         @RequestHeader("Authorization") String jwt
-    )throws Exception{
+    )throws CartItemException ,UserException{
         User user=userService.findUserByJwtToken(jwt);
         cartItemService.removeCartItem(user.getId(),cartItemId);
 
@@ -79,7 +81,7 @@ public class CartController {
         @PathVariable Long cartItemId,
         @RequestBody CartItem cartItem,
         @RequestHeader("Authorization") String jwt
-    ) throws Exception{
+    ) throws UserException,CartItemException{
 
         User user=userService.findUserByJwtToken(jwt);
 
