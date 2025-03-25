@@ -14,6 +14,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.CorsConfiguration;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 @Configuration
@@ -23,14 +24,15 @@ public class AppConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http)throws Exception {
         http.sessionManagement(management -> management.sessionCreationPolicy(
-                SessionCreationPolicy.STATELESS
-        )).authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/api/**").authenticated()
-                .requestMatchers("/api/products/*/reviews").permitAll()
-                .anyRequest().permitAll()
-        ).addFilterBefore(new JwtTokenValidator(), BasicAuthenticationFilter.class)
-                .csrf(csrf->csrf.disable())
-                .cors(cors->cors.configurationSource(corsConfigurationSource()));
+                SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/api/**").authenticated()
+                        .requestMatchers("/api/products/*/reviews").permitAll()
+                        .anyRequest().permitAll()
+                )
+                .addFilterBefore(new JwtTokenValidator(), BasicAuthenticationFilter.class)
+                        .csrf(csrf->csrf.disable())
+                        .cors(cors->cors.configurationSource(corsConfigurationSource()));
 
         return http.build();
     }
@@ -40,11 +42,11 @@ public class AppConfig {
             @Override
             public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
                 CorsConfiguration cfg=new CorsConfiguration();
-                cfg.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
+                cfg.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
                 cfg.setAllowedMethods(Collections.singletonList("*"));
-                cfg.setAllowedHeaders(Collections.singletonList("*"));
                 cfg.setAllowCredentials(true);
-                cfg.setExposedHeaders(Collections.singletonList("Authorization"));
+                cfg.setAllowedHeaders(Collections.singletonList("*"));
+                cfg.setExposedHeaders(Arrays.asList("Authorization"));
                 cfg.setMaxAge(3600L);
                 return cfg;
             }

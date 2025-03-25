@@ -20,6 +20,8 @@ public class DataInitializationComponent implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
+        initializeAdminUser();
+    }
 
     private void initializeAdminUser() {
         String adminUsername = "ajeet.811271@gmail.com";

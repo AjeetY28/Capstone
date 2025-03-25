@@ -41,6 +41,6 @@ public class AiChatBotController {
 
         ApiResponse apiResponse=aiChatBotService.aiChatBot(message,productId,user.getId());
 
-        return ResponseEntity.ok(apiResponse);
+        return ResponseEntity
     }
 }
