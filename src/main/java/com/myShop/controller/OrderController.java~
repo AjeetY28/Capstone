@@ -3,10 +3,14 @@ package com.myShop.controller;
 
 import com.myShop.domain.PaymentMethod;
 import com.myShop.entity.*;
+import com.myShop.exceptions.OrderException;
+import com.myShop.exceptions.UserException;
 import com.myShop.repository.PaymentOrderRepository;
 import com.myShop.response.PaymentLinkResponse;
 import com.myShop.service.*;
 import com.razorpay.PaymentLink;
+import com.razorpay.RazorpayException;
+import com.stripe.exception.StripeException;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.weaver.ast.Or;
 import org.springframework.http.HttpStatus;
@@ -24,10 +28,11 @@ public class OrderController {
     private final OrderService orderService;
     private final UserService userService;
     private final CartService cartService;
-    private final SellerService sellerService;
-    private final SellerReportService sellerReportService;
     private final PaymentService paymentService;
     private final PaymentOrderRepository paymentOrderRepository;
+    private final SellerReportService sellerReportService;
+    private final SellerService sellerService;
+
 
 
     @PostMapping()
@@ -35,7 +40,7 @@ public class OrderController {
             @RequestBody Address shippingAddress,
             @RequestParam PaymentMethod paymentMethod,
             @RequestHeader("Authorization") String jwt
-            )throws Exception{
+            )throws UserException, RazorpayException, StripeException {
 
         User user=userService.findUserByJwtToken(jwt);
         Cart cart=cartService.findUserCart(user);
@@ -73,7 +78,7 @@ public class OrderController {
     @GetMapping("/user")
     public ResponseEntity<List<Order>> userOrderHistoryHandler(
         @RequestHeader("Authorization") String jwt
-    ) throws Exception{
+    ) throws UserException{
 
         User user=userService.findUserByJwtToken(jwt);
         List<Order> orders=orderService.userOrderHistory(user.getId());
@@ -85,7 +90,7 @@ public class OrderController {
     public ResponseEntity<Order>getOrderById(
             @PathVariable Long orderId,
             @RequestHeader("Authorization") String jwt
-    ) throws Exception{
+    ) throws OrderException,UserException{
         User user=userService.findUserByJwtToken(jwt);
         Order orders=orderService.findOrderById(orderId);
 
@@ -104,7 +109,7 @@ public class OrderController {
         return new ResponseEntity<>(orderItem,HttpStatus.ACCEPTED);
     }
 
-    @PutMapping("{orderId/cancel}")
+    @PutMapping("{orderId}/cancel")
     public ResponseEntity<Order>cancelOrder(
             @PathVariable Long orderId,
             @RequestHeader("Authorization") String jwt

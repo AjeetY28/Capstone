@@ -3,6 +3,7 @@ package com.myShop.service.impl;
 import com.myShop.domain.OrderStatus;
 import com.myShop.domain.PaymentStatus;
 import com.myShop.entity.*;
+import com.myShop.exceptions.OrderException;
 import com.myShop.repository.AddressRepository;
 import com.myShop.repository.OrderItemRepository;
 import com.myShop.repository.OrderRepository;
@@ -63,9 +64,11 @@ public class OrderServiceImpl implements OrderService {
             orders.add(savedOrder);
 
             List<OrderItem> orderItems=new ArrayList<>();
+
             for(CartItem item:items)
             {
                 OrderItem orderItem=new OrderItem();
+
                 orderItem.setOrder(savedOrder);
                 orderItem.setMrpPrice(item.getMrpPrice());
                 orderItem.setProduct(item.getProduct());
@@ -86,10 +89,14 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order findOrderById(long id) throws Exception {
+    public Order findOrderById(long id) throws OrderException {
 
-        return orderRepository.findById(id)
-                .orElseThrow(()-> new Exception("Order not found"));
+        Optional<Order> opt=orderRepository.findById(id);
+
+        if(opt.isPresent()) {
+            return opt.get();
+        }
+        throw new OrderException("order not exist with id "+id);
     }
 
     @Override
@@ -98,32 +105,45 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.findByUserId(userId);
     }
 
+//    @Override
+//    public List<Order> sellersOrder(Long sellerId) {
+//        return orderRepository.findBySellerId(sellerId);
+//    }
     @Override
-    public List<Order> sellersOrder(Long sellerId) {
-        return orderRepository.findBySellerId(sellerId);
+    public List<Order> getShopsOrders(Long sellerId) {
+
+    return orderRepository.findBySellerIdOrderByOrderDateDesc(sellerId);
     }
 
     @Override
-    public Order updateOrderStatus(Long orderId, OrderStatus orderStatus) throws Exception {
+    public Order updateOrderStatus(Long orderId, OrderStatus orderStatus)
+            throws OrderException {
         Order order=findOrderById(orderId);
         order.setOrderStaus(orderStatus);
         return orderRepository.save(order);
     }
 
     @Override
-    public Order cancelOrder(Long orderId, User user) throws Exception {
-        Order order=findOrderById(orderId);
+    public Order cancelOrder(Long orderId, User user) throws OrderException {
+        Order order=this.findOrderById(orderId);
 
         if(!order.getUser().getId().equals(user.getId()))
         {
-            throw new Exception("You don't have access to cancel this order");
+            throw new OrderException("You don't have access to cancel this order");
         }
         order.setOrderStaus(OrderStatus.CANCELLED);
         return orderRepository.save(order);
     }
+    @Override
+    public void deleteOrder(Long orderId) throws OrderException {
+        Order order = findOrderById(orderId);
+
+        orderRepository.deleteById(orderId);
+
+    }
 
     @Override
-    public OrderItem findById(Long id) throws Exception {
+    public OrderItem getOrderItemById(Long id) throws Exception {
         return orderItemRepository.findById(id).orElseThrow(()->
                 new Exception("Order item not exist...."));
     }

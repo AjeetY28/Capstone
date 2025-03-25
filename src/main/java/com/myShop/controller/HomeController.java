@@ -2,6 +2,8 @@ package com.myShop.controller;
 
 
 import com.myShop.response.ApiResponse;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -9,9 +11,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class HomeController {
 
     @GetMapping
-    public ApiResponse homeControllerHandler() {
+    public ResponseEntity<ApiResponse> homeControllerHandler() {
         ApiResponse apiResponse=new ApiResponse();
-        apiResponse.setMessage("Hello Ajeet");
-        return apiResponse;
+        apiResponse.setMessage("Ecommerce Application Developed By Ajeet Yadav");
+        return new ResponseEntity<>(apiResponse, HttpStatus.ACCEPTED);
+
     }
 }
