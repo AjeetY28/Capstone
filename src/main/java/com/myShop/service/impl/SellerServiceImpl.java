@@ -25,17 +25,17 @@ public class SellerServiceImpl implements SellerService {
     private final AddressRepository addressRepository;
 
     @Override
-    public Seller getSellerProfile(String jwt) throws Exception {
+    public Seller getSellerProfile(String jwt) throws SellerException {
         String email=jwtProvider.getEmailFromJwtToken(jwt);
         return this.getSellerByEmail(email);
     }
 
     @Override
-    public Seller createSeller(Seller seller) throws Exception {
+    public Seller createSeller(Seller seller) throws SellerException {
         Seller sellerExists=sellerRepository.findByEmail(seller.getEmail());
         if(sellerExists!=null)
         {
-            throw new Exception("Seller already exists,use different email");
+            throw new SellerException("Seller already exists,use different email");
         }
         Address savedAddress=addressRepository.save(seller.getPickupAddress());
 
@@ -63,11 +63,11 @@ public class SellerServiceImpl implements SellerService {
     }
 
     @Override
-    public Seller getSellerByEmail(String email) throws Exception {
+    public Seller getSellerByEmail(String email) throws SellerException {
         Seller seller=sellerRepository.findByEmail(email);
         if(seller==null)
         {
-            throw new Exception("Seller not found......");
+            throw new SellerException("Seller not found......");
         }
 
         return seller;
@@ -80,7 +80,7 @@ public class SellerServiceImpl implements SellerService {
     }
 
     @Override
-    public Seller updateSeller(Seller seller, Long id) throws Exception {
+    public Seller updateSeller(Seller seller, Long id) throws SellerException {
         Seller existingSeller=this.getSellerById(id);
 
         if(seller.getSellerName()!=null){
@@ -138,13 +138,13 @@ public class SellerServiceImpl implements SellerService {
     }
 
     @Override
-    public void deleteSeller(Long id) throws Exception {
+    public void deleteSeller(Long id) throws SellerException {
         Seller seller=getSellerById(id);
         sellerRepository.delete(seller);
     }
 
     @Override
-    public Seller verifyEmail(String email, String otp) throws Exception {
+    public Seller verifyEmail(String email, String otp) throws SellerException {
         Seller seller=getSellerByEmail(email);
         seller.setEmailVerified(true);
         return sellerRepository.save(seller);
