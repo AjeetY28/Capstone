@@ -16,6 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/coupon")
 public class AdminCouponController {
+
     public final CouponService couponService;
     private final UserService userService;
     private final CartService cartService;
@@ -38,6 +39,8 @@ public class AdminCouponController {
         }
         return ResponseEntity.ok(cart);
     }
+
+    //Admin operations
 
     @PostMapping("/admin/create")
     public ResponseEntity<Coupon> createCoupon(@RequestBody Coupon coupon){

@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/coupon")
@@ -50,8 +52,9 @@ public class AdminCouponController {
     }
 
     @GetMapping("/admin/all")
-    public ResponseEntity<?>getAllCoupons(){
-        return ResponseEntity.ok(couponService.findAllCoupons());
+    public ResponseEntity<List<Coupon>>getAllCoupons(){
+        List<Coupon>coupons=couponService.findAllCoupons();
+        return ResponseEntity.ok(coupons);
     }
 
 }
