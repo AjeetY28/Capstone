@@ -1,0 +1,4 @@
+package com.myShop.service.impl;
+
+public class RevenueServiceImpl {
+}
