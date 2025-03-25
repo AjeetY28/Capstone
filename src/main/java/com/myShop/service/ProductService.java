@@ -10,12 +10,13 @@ import java.util.List;
 
 public interface ProductService {
 
-    public Product createProduct(CreateProductRequest req, Seller seller);
-    public void deleteProduct(Long productId) throws ProductException;
-    public Product updateProduct(Long productId, Product product) throws ProductException;
-    public Product findProductById(Long productId) throws ProductException;
+    Product createProduct(CreateProductRequest req, Seller seller)throws ProductException;
+    void deleteProduct(Long productId) throws ProductException;
+    Product updateProduct(Long productId, Product product) throws ProductException;
+    Product updateProductStock(Long productId)throws ProductException;
+    Product findProductById(Long productId) throws ProductException;
     List<Product> searchProduct(String query);
-    public Page<Product> getAllProduct(String Category,
+    Page<Product> getAllProduct(String Category,
                                        String brand,
                                        String color,
                                        String sizes,
@@ -26,5 +27,6 @@ public interface ProductService {
                                        String stock,
                                        Integer pageNumber
                                        );
+    List<Product> recentlyAddedProduct();
     List<Product> getProductsBySellerId(Long sellerId);
 }

@@ -3,6 +3,9 @@ package com.myShop.controller;
 import com.myShop.entity.Product;
 import com.myShop.entity.Review;
 import com.myShop.entity.User;
+import com.myShop.exceptions.ProductException;
+import com.myShop.exceptions.ReviewNotFoundException;
+import com.myShop.exceptions.UserException;
 import com.myShop.request.CreateReviewRequest;
 import com.myShop.response.ApiResponse;
 import com.myShop.service.ProductService;
@@ -12,11 +15,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.naming.AuthenticationException;
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/review")
+@RequestMapping("/api")
 public class ReviewController {
 
     private final ReviewService reviewService;
@@ -36,7 +40,7 @@ public class ReviewController {
             @PathVariable Long productId,
             @RequestBody CreateReviewRequest req,
             @RequestHeader("Authorization") String jwt
-    )throws Exception
+    )throws UserException, ProductException
     {
         User user=userService.findUserByJwtToken(jwt);
         Product product=productService.findProductById(productId);
@@ -49,7 +53,8 @@ public class ReviewController {
     public ResponseEntity<Review> updateReview(
             @PathVariable Long reviewId,
             @RequestHeader("Authorization") String jwt,
-            @RequestBody CreateReviewRequest req)throws Exception
+            @RequestBody CreateReviewRequest req)throws UserException,
+            ReviewNotFoundException, AuthenticationException
     {
         User user=userService.findUserByJwtToken(jwt);
 

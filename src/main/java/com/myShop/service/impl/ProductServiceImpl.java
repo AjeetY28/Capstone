@@ -34,11 +34,14 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Product createProduct(CreateProductRequest req, Seller seller) {
 
+        int discountPercentage = calculateDiscountPercentage(req.getMrpPrice(), req.getSellingPrice());
+
         Category category1=categoryRepository.findByCategoryId(req.getCategory());
         if (category1 == null) {
             Category category = new Category();
             category.setCategoryId(req.getCategory());
             category.setLevel(1);
+            category.setName(req.getCategory().replace("_"," "));
             category1=categoryRepository.save(category);
         }
         Category category2=categoryRepository.findByCategoryId(req.getCategory2());
@@ -47,6 +50,7 @@ public class ProductServiceImpl implements ProductService {
             category.setCategoryId(req.getCategory2());
             category.setLevel(2);
             category.setParentCategory(category1);
+            category.setName(req.getCategory2().replace("_"," "));
             category2=categoryRepository.save(category);
         }
         Category category3=categoryRepository.findByCategoryId(req.getCategory3());
@@ -55,19 +59,20 @@ public class ProductServiceImpl implements ProductService {
             category.setCategoryId(req.getCategory3());
             category.setLevel(3);
             category.setParentCategory(category2);
+            category.setName(req.getCategory2().replace("_"," "));
             category3=categoryRepository.save(category);
         }
 
-        int discountPercentage= calculateDiscountPercentage(req.getMrpPrice(),req.getSellingPrice());
+//        int discountPercentage= calculateDiscountPercentage(req.getMrpPrice(),req.getSellingPrice());
 
 
         Product product = new Product();
         product.setSeller(seller);
         product.setCategory(category3);
-        product.setDescription(req.getDescription());
-        product.setCreatedAt(LocalDateTime.now());
         product.setTitle(req.getTitle());
         product.setColor(req.getColor());
+        product.setDescription(req.getDescription());
+        product.setCreatedAt(LocalDateTime.now());
         product.setSellingPrice(req.getSellingPrice());
         product.setImages(req.getImages());
         product.setMrpPrice(req.getMrpPrice());
@@ -101,6 +106,13 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public Product updateProductStock(Long productId) throws ProductException {
+        Product product = this.findProductById(productId);
+        product.setIn_stock(!product.isIn_stock());
+        return productRepository.save(product);
+    }
+
+    @Override
     public Product findProductById(Long productId) throws ProductException {
         return productRepository.findById(productId).orElseThrow(()->
                 new ProductException("Product not found with the id....."+productId));
@@ -109,19 +121,33 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<Product> searchProduct(String query) {
-        productRepository.searchProduct(query);
-        return List.of();
+
+        return productRepository.searchProduct(query);
+
     }
 
     @Override
-    public Page<Product> getAllProduct(String category, String brand, String color, String sizes, Integer minPrice, Integer maxPrice, Integer minDiscount, String sort, String stock, Integer pageNumber) {
+    public Page<Product> getAllProduct(String category,
+                                       String brand,
+                                       String color,
+                                       String sizes,
+                                       Integer minPrice,
+                                       Integer maxPrice,
+                                       Integer minDiscount,
+                                       String sort,
+                                       String stock,
+                                       Integer pageNumber) {
         Specification<Product> spec=(root, query, criteriaBuilder) -> {
             List<Predicate> predicates=new ArrayList<>();
 
             if(category!=null)
             {
                 Join<Product,Category> categoryJoin= root.join("category");
-                predicates.add(criteriaBuilder.equal(categoryJoin.get("categoryId"),category));
+                Predicate categoryPredicate = criteriaBuilder.or(
+                        criteriaBuilder.equal(categoryJoin.get("categoryId"), category),  // Match categoryId
+                        criteriaBuilder.equal(categoryJoin.get("parentCategory").get("categoryId"), category)  // Match parentCategory.categoryId
+                );
+                predicates.add(categoryPredicate);
             }
 
             if(color!=null && !color.isEmpty())
@@ -157,9 +183,11 @@ public class ProductServiceImpl implements ProductService {
         if(sort!=null && !sort.isEmpty())
         {
             pageable = switch (sort) {
-                case "price_low" -> PageRequest.of(pageNumber != null ? pageNumber : 0, 10,
+                case "price_low" ->
+                        PageRequest.of(pageNumber != null ? pageNumber : 0, 10,
                         Sort.by("sellingPrice").ascending());
-                case "price_high" -> PageRequest.of(pageNumber != null ? pageNumber : 0, 10,
+                case "price_high" ->
+                        PageRequest.of(pageNumber != null ? pageNumber : 0, 10,
                         Sort.by("sellingPrice").descending());
                 default -> PageRequest.of(pageNumber != null ? pageNumber : 0, 10,
                         Sort.unsorted());
@@ -170,6 +198,12 @@ public class ProductServiceImpl implements ProductService {
 
         return productRepository.findAll(spec,pageable);
     }
+
+    @Override
+    public List<Product> recentlyAddedProduct() {
+        return List.of();
+    }
+
 
     @Override
     public List<Product> getProductsBySellerId(Long sellerId) {
