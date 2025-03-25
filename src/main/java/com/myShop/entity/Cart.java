@@ -37,5 +37,7 @@ public class Cart {
 
     private String couponCode;
 
+    private int couponPrice;
+
 
 }
