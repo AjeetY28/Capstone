@@ -15,4 +15,6 @@ public class ErrorDetails {
     private String error;
     private String details;
     private LocalDateTime timestamp;
+
+
 }
