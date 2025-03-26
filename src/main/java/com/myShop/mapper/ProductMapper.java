@@ -31,6 +31,9 @@ public class ProductMapper {
 
         productDto.setSizes(product.getSizes());
 
+        productDto.setCreatedAt(product.getCreatedAt());
+
+
         return productDto;
 
     }

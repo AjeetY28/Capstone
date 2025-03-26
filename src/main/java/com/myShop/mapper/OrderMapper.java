@@ -36,7 +36,7 @@ public class OrderMapper {
         }
 
         OrderItem orderItem=new OrderItem();
-
+        orderItem.setId(orderItemDto.getId());
         orderItem.setSize(orderItemDto.getSize());
         orderItem.setQuantity(orderItemDto.getQuantity());
         orderItem.setMrpPrice(orderItemDto.getMrpPrice());
@@ -53,21 +53,50 @@ public class OrderMapper {
 
         OrderDto orderDto=new OrderDto();
 
+        orderDto.setId(order.getId());
+        orderDto.setOrderId(order.getOrderId());
+        orderDto.setUser(UserMapper.toUserDto(order.getUser()));
+        orderDto.setSellerId(order.getSellerId());
+        orderDto.setOrderItems(order.getOrderItems().stream().map(OrderMapper::toOrderItemDto).collect(Collectors.toList()));
+        orderDto.setShippingAddress(order.getShippingAddress());
+        orderDto.setPaymentDetails(order.getPaymentDetails());
+        orderDto.setTotalMrpPrice(order.getTotalMrpPrice());
+        orderDto.setTotalSellingPrince(order.getTotalSellingPrince());
+        orderDto.setDiscount(order.getDiscount());
+        orderDto.setOrderStatus(order.getOrderStatus());
+        orderDto.setTotalItem(order.getTotalItem());
+        orderDto.setPaymentStatus(order.getPaymentStatus());
+        orderDto.setOrderDate(order.getOrderDate());
+        orderDto.setDeliverDate(order.getDeliverDate());
+
+
+        return orderDto;
+    }
+    //Maps OrderDto to Order
+    public static Order toOrder(OrderDto orderDto){
+        if (orderDto == null) {
+            return null;
+        }
+
+        Order order=new Order();
+
         order.setId(orderDto.getId());
         order.setOrderId(orderDto.getOrderId());
+//        order.setUser(UserMapper.toUser(orderDto.getUser()));
         order.setSellerId(orderDto.getSellerId());
+//        order.setOrderItems(orderDto.getOrderItems().stream().map(OrderMapper::toOrderItem).collect(Collectors.toList()));
         order.setShippingAddress(orderDto.getShippingAddress());
         order.setPaymentDetails(orderDto.getPaymentDetails());
         order.setTotalMrpPrice(orderDto.getTotalMrpPrice());
         order.setTotalSellingPrince(orderDto.getTotalSellingPrince());
         order.setDiscount(orderDto.getDiscount());
-        order.setOrderStaus(orderDto.getOrderStatus());
+        order.setOrderStatus(orderDto.getOrderStatus());
         order.setTotalItem(orderDto.getTotalItem());
         order.setPaymentStatus(orderDto.getPaymentStatus());
         order.setOrderDate(orderDto.getOrderDate());
         order.setDeliverDate(orderDto.getDeliverDate());
 
-        return orderDto;
+        return order;
     }
 
     //Maps OderHistory to OrderHistoryDto
@@ -82,7 +111,7 @@ public class OrderMapper {
 
         // Filter current orders (those that are not DELIVERED or CANCELLED)
         List<OrderDto> currentOrders = orders.stream()
-                .filter(order->order.getOrderStaus() != OrderStatus.DELIVERED && order.getOrderStaus() != OrderStatus.CANCELLED)
+                .filter(order->order.getOrderStatus() != OrderStatus.DELIVERED && order.getOrderStatus() != OrderStatus.CANCELLED)
                 .map(OrderMapper::toOrderDto)
                 .collect(Collectors.toList());
 
@@ -93,13 +122,13 @@ public class OrderMapper {
 
         //Set cancelled orders
         int cancelledOrders=(int)orders.stream()
-                .filter(order -> order.getOrderStaus() == OrderStatus.CANCELLED)
+                .filter(order -> order.getOrderStatus() == OrderStatus.CANCELLED)
                 .count();
         orderHistory.setCancelledOrders(cancelledOrders);
 
         //Set completed orders(those that are DELIVERED)
         int completedOrders=(int)orders.stream()
-                .filter(order -> order.getOrderStaus() == OrderStatus.DELIVERED)
+                .filter(order -> order.getOrderStatus() == OrderStatus.DELIVERED)
                 .count();
         orderHistory.setCompletedOrders(completedOrders);
 
