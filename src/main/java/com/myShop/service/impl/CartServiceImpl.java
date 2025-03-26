@@ -19,7 +19,10 @@ public class CartServiceImpl implements CartService {
     private final CartItemRepository cartItemRepository;
 
     @Override
-    public CartItem addCartItem(User user, Product product, String size, int quantity) {
+    public CartItem addCartItem(User user,
+                                Product product,
+                                String size,
+                                int quantity) {
 
         Cart cart=findUserCart(user);
         CartItem isPresent=cartItemRepository.findByCartAndProductAndSize(cart,product,size);
@@ -61,11 +64,12 @@ public class CartServiceImpl implements CartService {
         }
 
         cart.setTotalMrpPrice(totalPrice);
-        cart.setTotalItem(totalItem);
-        cart.setTotalSellingPrice(totalDiscountPrice);
+        cart.setTotalItem(cart.getCartItems().size());
+        cart.setTotalSellingPrice(totalDiscountPrice-cart.getCouponPrice());
         cart.setDiscount(calculateDiscountPercentage(totalPrice,totalDiscountPrice));
         cart.setTotalItem(totalItem);
-        return cart;
+
+        return cartRepository.save(cart);
     }
 
 

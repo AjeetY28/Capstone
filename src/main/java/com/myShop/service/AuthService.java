@@ -1,6 +1,5 @@
 package com.myShop.service;
 
-import com.myShop.domain.USER_ROLE;
 import com.myShop.exceptions.SellerException;
 import com.myShop.exceptions.UserException;
 import com.myShop.request.LoginRequest;
@@ -12,6 +11,5 @@ public interface AuthService {
 
     void sentLoginOtp(String email) throws MessagingException, UserException;
     String createUser(SignupRequest req) throws SellerException;
-
     AuthResponse signIn(LoginRequest req) throws SellerException;
 }

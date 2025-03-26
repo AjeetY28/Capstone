@@ -20,13 +20,14 @@ public class EmailService {
                                          String otp,
                                          String subject,
                                          String text)
-                                throws MessagingException {
+                                throws MessagingException ,MailSendException{
         try{
             MimeMessage mimeMessage=javaMailSender.createMimeMessage();
             MimeMessageHelper mimeMessageHelper=new MimeMessageHelper(
                     mimeMessage,"utf-8");
+
             mimeMessageHelper.setSubject(subject);
-            mimeMessageHelper.setText(text);
+            mimeMessageHelper.setText(text+otp,true);
             mimeMessageHelper.setTo(userEmail);
             javaMailSender.send(mimeMessage);
         } catch (MailException e) {

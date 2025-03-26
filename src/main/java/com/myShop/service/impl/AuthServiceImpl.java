@@ -47,7 +47,6 @@ public class AuthServiceImpl implements AuthService{
     private final EmailService emailService;
     private final CustomUserServiceImpl customUserService;
     private final VerificationCodeRepository verificationCodeRepository;
-    private final SellerRepository sellerRepository;
     private final UserService userService;
 
     @Override
@@ -61,7 +60,8 @@ public class AuthServiceImpl implements AuthService{
 
         }
 
-        VerificationCode isExist=verificationCodeRepository.findByEmail(email);
+        VerificationCode isExist=verificationCodeRepository.
+                findByEmail(email);
 
         if(isExist!=null)
         {
@@ -104,11 +104,11 @@ public class AuthServiceImpl implements AuthService{
         if(user==null)
         {
             User createdUser=new User();
-            createdUser.setName(req.getName());
-            createdUser.setEmail(req.getEmail());
+            createdUser.setName(name);
+            createdUser.setEmail(email);
             createdUser.setRole(USER_ROLE.ROLE_CUSTOMER);
             createdUser.setPhone("9876543210");
-            createdUser.setPassword(passwordEncoder.encode(req.getOtp()));
+            createdUser.setPassword(passwordEncoder.encode(otp));
 
             user=userRepository.save(createdUser);
 
@@ -117,9 +117,11 @@ public class AuthServiceImpl implements AuthService{
             cartRepository.save(cart);
         }
         List<GrantedAuthority>authorities=new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority(USER_ROLE.ROLE_CUSTOMER.toString()));
+        authorities.add(new SimpleGrantedAuthority(
+                USER_ROLE.ROLE_CUSTOMER.toString()));
 
-        Authentication authentication=new UsernamePasswordAuthenticationToken(email,null,authorities);
+        Authentication authentication=new UsernamePasswordAuthenticationToken(
+                email, null,authorities);
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         return jwtProvider.generateToken(authentication);
@@ -127,6 +129,7 @@ public class AuthServiceImpl implements AuthService{
 
     @Override
     public AuthResponse signIn(LoginRequest req) throws SellerException {
+
         String userName=req.getEmail();
         String otp=req.getOtp();
 
@@ -141,7 +144,7 @@ public class AuthServiceImpl implements AuthService{
         authResponse.setMessage("Login Success");
 
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-        String roleName=authorities.isEmpty()?null:authorities.iterator().next().getAuthority();
+        String roleName=authorities.isEmpty() ? null : authorities.iterator().next().getAuthority();
 
         authResponse.setRole(USER_ROLE.valueOf(roleName));
         return authResponse;

@@ -25,7 +25,8 @@ public class CustomUserServiceImpl implements UserDetailsService {
     private static final String SELLER_PREFIX="seller_";
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username)
+            throws UsernameNotFoundException {
         if(username.startsWith(SELLER_PREFIX)){
                 String actualUserName =username.substring(SELLER_PREFIX.length());
                 Seller seller =sellerRepository.findByEmail(actualUserName);

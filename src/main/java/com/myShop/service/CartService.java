@@ -4,14 +4,15 @@ import com.myShop.entity.Cart;
 import com.myShop.entity.CartItem;
 import com.myShop.entity.Product;
 import com.myShop.entity.User;
+import com.myShop.exceptions.ProductException;
 
 public interface CartService {
 
-    public CartItem addCartItem(
+    CartItem addCartItem(
             User user,
             Product product,
             String size,
-            int quantity);
+            int quantity) throws ProductException;
 
-    public Cart findUserCart(User user);
+    Cart findUserCart(User user);
 }

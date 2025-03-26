@@ -56,7 +56,7 @@ public class OrderServiceImpl implements OrderService {
             createdOrder.setTotalSellingPrince(totalOrderPrice);
             createdOrder.setTotalItem(totalItem);
             createdOrder.setShippingAddress(address);
-            createdOrder.setOrderStaus(OrderStatus.PENDING);
+            createdOrder.setOrderStatus(OrderStatus.PENDING);
             createdOrder.getPaymentDetails().setStatus(PaymentStatus.PENDING);
 
 
@@ -119,7 +119,7 @@ public class OrderServiceImpl implements OrderService {
     public Order updateOrderStatus(Long orderId, OrderStatus orderStatus)
             throws OrderException {
         Order order=findOrderById(orderId);
-        order.setOrderStaus(orderStatus);
+        order.setOrderStatus(orderStatus);
         return orderRepository.save(order);
     }
 
@@ -131,7 +131,7 @@ public class OrderServiceImpl implements OrderService {
         {
             throw new OrderException("You don't have access to cancel this order");
         }
-        order.setOrderStaus(OrderStatus.CANCELLED);
+        order.setOrderStatus(OrderStatus.CANCELLED);
         return orderRepository.save(order);
     }
     @Override
