@@ -4,6 +4,7 @@ package com.myShop.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -18,16 +19,17 @@ import java.util.Set;
 public class Coupon {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true, nullable = false)
     private String code;
 
     private double discountPercentage;
 
-    private LocalDateTime validityStartDate;
+    private LocalDate validityStartDate;
 
-    private LocalDateTime validityEndDate;
+    private LocalDate validityEndDate;
 
     private double minimumOrderValue;
 

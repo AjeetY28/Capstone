@@ -13,7 +13,6 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
@@ -21,7 +20,7 @@ import java.util.List;
 public class Order {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String orderId;
@@ -46,7 +45,7 @@ public class Order {
 
     private Integer discount;
 
-    private OrderStatus orderStaus;
+    private OrderStatus orderStatus;
 
     private int totalItem;
 
