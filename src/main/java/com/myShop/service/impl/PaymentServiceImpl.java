@@ -5,6 +5,7 @@ import com.myShop.domain.PaymentStatus;
 import com.myShop.entity.Order;
 import com.myShop.entity.PaymentOrder;
 import com.myShop.entity.User;
+import com.myShop.repository.CartRepository;
 import com.myShop.repository.OrderRepository;
 import com.myShop.repository.PaymentOrderRepository;
 import com.myShop.service.PaymentService;
@@ -19,39 +20,53 @@ import com.stripe.param.checkout.SessionCreateParams;
 
 import lombok.RequiredArgsConstructor;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
 public class PaymentServiceImpl implements PaymentService {
 
-    private PaymentOrderRepository paymentOrderRepository;
-    private OrderRepository orderRepository;
+    private final PaymentOrderRepository paymentOrderRepository;
+    private final OrderRepository orderRepository;
+    private final CartRepository cartRepository;
 
-    private final String apiKey="apiKey";
-    private final String apiSecret="apiSecret";
-    private final String stripeSecretKey="stripeSecretKey";
+    @Value("${razorpay.api.key}")
+    private  String apiKey="apiKey";
+
+    @Value("${razorpay.api.secret}")
+    private  String apiSecret="apiSecret";
+
+    @Value("${stripe.api.key}")
+    private  String stripeSecretKey="stripeSecretKey";
 
 
 
     @Override
     public PaymentOrder createOrder(User user, Set<Order> orders) {
         Long amount=orders.stream().mapToLong(Order::getTotalSellingPrince).sum();
+        int couponPrice=cartRepository.findByUserId(user.getId()).getCouponPrice();
 
         PaymentOrder paymentOrder=new PaymentOrder();
-        paymentOrder.setAmount(amount);
+        paymentOrder.setAmount(amount-couponPrice);
         paymentOrder.setUser(user);
         paymentOrder.setOrders(orders);
+
+
         return paymentOrderRepository.save(paymentOrder);
     }
 
     @Override
     public PaymentOrder getPaymentOrderById(Long orderId) throws Exception {
 
-        return paymentOrderRepository.findById(orderId)
-                .orElseThrow(()->new Exception("Payment order not found"));
+        Optional<PaymentOrder> optionalPaymentOrder=paymentOrderRepository.findById(orderId);
+        if(optionalPaymentOrder.isEmpty()){
+            throw new Exception("Payment order not found with id "+orderId);
+        }
+        return optionalPaymentOrder.get();
     }
 
     @Override
@@ -67,6 +82,7 @@ public class PaymentServiceImpl implements PaymentService {
     public Boolean ProceedPaymentOrder(PaymentOrder paymentOrder,
                                        String paymentId,
                                        String paymentLinkedId) throws RazorpayException {
+
         if(paymentOrder.getStatus().equals(PaymentOrderStatus.PENDING)){
             RazorpayClient razorpay=new RazorpayClient(apiKey,apiSecret);
 
@@ -93,7 +109,11 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public PaymentLink createRazorpayPaymentLink(User user, Long amount, Long orderId) throws RazorpayException {
+    public PaymentLink createRazorpayPaymentLink(User user,
+                                                 Long amount,
+                                                 Long orderId)
+            throws RazorpayException {
+
         amount=amount*100;
 
         try{
@@ -124,7 +144,7 @@ public class PaymentServiceImpl implements PaymentService {
 
             return paymentLink;
 
-        }catch (Exception e){
+        }catch (RazorpayException e){
             System.out.println(e.getMessage());
             throw new RazorpayException(e.getMessage());
         }
@@ -147,9 +167,11 @@ public class PaymentServiceImpl implements PaymentService {
                                 .setUnitAmount(amount*100)
                                 .setProductData(
                                         SessionCreateParams
-                                                .LineItem.PriceData
+                                                .LineItem
+                                                .PriceData
                                                 .ProductData
-                                                .builder().setName("Ecommerce")
+                                                .builder()
+                                                .setName("Ecommerce")
                                                 .build()
                                 ).build()
                         ).build()

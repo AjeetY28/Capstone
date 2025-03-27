@@ -28,14 +28,14 @@ public class WishListServiceImpl implements WishListService {
         WishList wishList=wishListRepository.findByUserId(user.getId());
         if(wishList==null)
         {
-            wishList=createWishList(user);
+            wishList=this.createWishList(user);
         }
         return wishList;
     }
 
     @Override
     public WishList addProductToWishList(User user, Product product) {
-        WishList wishList=getWishListByUserId(user);
+        WishList wishList=this.getWishListByUserId(user);
         if(wishList.getProduct().contains(product))
         {
             wishList.getProduct().remove(product);

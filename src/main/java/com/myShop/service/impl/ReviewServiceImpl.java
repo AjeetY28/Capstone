@@ -22,7 +22,9 @@ public class ReviewServiceImpl implements ReviewService {
     private final ProductService productService;
 
     @Override
-    public Review createReview(CreateReviewRequest req, User user, Product product) {
+    public Review createReview(CreateReviewRequest req,
+                               User user,
+                               Product product) {
         Review review=new Review();
 
         review.setUser(user);
@@ -32,6 +34,7 @@ public class ReviewServiceImpl implements ReviewService {
         review.setProductImages(req.getProductImages());
 
         product.getReviews().add(review);
+
         return reviewRepository.save(review);
     }
 
@@ -41,7 +44,12 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public Review updateReview(Long reviewId, String reviewText, double rating, Long userId) throws ReviewNotFoundException, AuthenticationException {
+    public Review updateReview(Long reviewId,
+                               String reviewText,
+                               double rating,
+                               Long userId)
+            throws ReviewNotFoundException, AuthenticationException {
+
         Review review=reviewRepository.findById(reviewId)
                 .orElseThrow(()-> new ReviewNotFoundException("Review Not found"));
 
@@ -51,11 +59,14 @@ public class ReviewServiceImpl implements ReviewService {
 
         review.setReviewText(reviewText);
         review.setRating(rating);
+
         return reviewRepository.save(review);
     }
 
     @Override
-    public void deleteReview(Long reviewId, Long userId) throws ReviewNotFoundException, AuthenticationException {
+    public void deleteReview(Long reviewId, Long userId)
+            throws ReviewNotFoundException, AuthenticationException {
+
         Review review=reviewRepository.findById(reviewId)
                 .orElseThrow(()-> new ReviewNotFoundException("Review Not found"));
         if(review.getUser().getId()!=userId){

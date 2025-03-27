@@ -80,9 +80,6 @@ public class ProductServiceImpl implements ProductService {
         product.setMrpPrice(req.getMrpPrice());
         product.setSizes(req.getSizes());
         product.setDiscountPercent(discountPercentage);
-
-
-
         return productRepository.save(product);
 
     }
@@ -105,7 +102,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product updateProduct(Long productId, Product product) throws ProductException {
-        this.findProductById(productId);
+        findProductById(productId);
         product.setId(productId);
         return productRepository.save(product);
     }
