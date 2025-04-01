@@ -22,6 +22,7 @@ public class Payouts {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @OneToMany
     private List<Transaction> transactions=new ArrayList<>();
 
     @ManyToOne

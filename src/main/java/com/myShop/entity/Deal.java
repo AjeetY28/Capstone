@@ -4,12 +4,10 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Data
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode
 public class Deal {
 
     @Id

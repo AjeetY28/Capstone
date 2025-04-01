@@ -2,10 +2,7 @@ package com.myShop.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 import java.util.Date;
 
@@ -20,14 +17,15 @@ public class PasswordResetToken {
     @Id
     private Integer id;
 
-    private @NotNull String token;
+    private @NonNull String token;
 
-    @ManyToOne(targetEntity = User.class,fetch = FetchType.EAGER)
-    private @NotNull User user;
+    @ManyToOne(targetEntity = User.class, fetch = FetchType.EAGER)
+    private @NonNull User user;
 
-    private @NotNull Date expiryDate;
+    private @NonNull  Date expiryDate;
 
-    public boolean isExpired(){
+    public boolean isExpired() {
         return expiryDate.before(new Date());
     }
+
 }
