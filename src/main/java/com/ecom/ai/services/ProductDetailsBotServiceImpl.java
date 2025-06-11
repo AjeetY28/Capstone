@@ -1,0 +1,92 @@
+package com.ecom.ai.services;
+
+import org.springframework.stereotype.Service;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
+
+
+@Service
+public class ProductDetailsBotServiceImpl implements ProductDetailsBotService{
+
+
+    @Value("${gemini.api.key}")
+    private String apiKey;
+
+    @Override
+    public String productDetailsChatBot(String prompt) {
+        try {
+            // Construct the Gemini API URL with the API key
+            String geminiApiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + apiKey;
+            // Create HTTP headers
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+
+            // Add system instructions to help the model understand its role
+            String systemInstruction = "You are a helpful product assistant for an e-commerce platform. " +
+                    "Provide detailed, accurate information about products when asked. " +
+                    "Focus on features, specifications, use cases, and comparisons when relevant. " +
+                    "If you don't know specific details about a product, acknowledge that and provide general information.";
+
+            // Construct the request body with system instructions
+            JSONObject requestBody = new JSONObject()
+                    .put("contents", new JSONArray()
+                            .put(new JSONObject()
+                                    .put("role", "system")
+                                    .put("parts", new JSONArray()
+                                            .put(new JSONObject()
+                                                    .put("text", systemInstruction)
+                                            )
+                                    )
+                            )
+                            .put(new JSONObject()
+                                    .put("role", "user")
+                                    .put("parts", new JSONArray()
+                                            .put(new JSONObject()
+                                                    .put("text", prompt)
+                                            )
+                                    )
+                            )
+                    )
+                    .put("generationConfig", new JSONObject()
+                            .put("temperature", 0.7)
+                            .put("topP", 0.8)
+                            .put("topK", 40)
+                            .put("maxOutputTokens", 1024)
+                    );
+
+            // Create the HTTP entity with headers and body
+            HttpEntity<String> requestEntity = new HttpEntity<>(requestBody.toString(), headers);
+
+            // Make the API call
+            RestTemplate restTemplate = new RestTemplate();
+            ResponseEntity<String> response = restTemplate.postForEntity(geminiApiUrl, requestEntity, String.class);
+
+            // Process the response
+            String responseBody = response.getBody();
+            JSONObject jsonResponse = new JSONObject(responseBody);
+
+            // Extract the text from the response
+            JSONArray candidates = jsonResponse.getJSONArray("candidates");
+            JSONObject firstCandidate = candidates.getJSONObject(0);
+            JSONObject content = firstCandidate.getJSONObject("content");
+            JSONArray parts = content.getJSONArray("parts");
+            JSONObject firstPart = parts.getJSONObject(0);
+
+            return firstPart.getString("text");
+
+        } catch (Exception e) {
+            // Log the error
+            System.err.println("Error calling Gemini API for product details: " + e.getMessage());
+            e.printStackTrace();
+
+            // Return an error message
+            return "I'm sorry, I couldn't retrieve product information at the moment. Please try again later.";
+        }
+    }
+}
