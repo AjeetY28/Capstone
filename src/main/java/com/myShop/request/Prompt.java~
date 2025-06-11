@@ -1,0 +1,9 @@
+package com.myShop.request;
+
+
+@D
+public class Prompt {
+
+    private String prompt;
+
+}

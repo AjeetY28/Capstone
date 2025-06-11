@@ -1,0 +1,13 @@
+package com.myShop.response;
+
+import com.myShop.dto.OrderHistory;
+import com.myShop.entity.Cart;
+import com.myShop.entity.Product;
+
+public class FunctionResponse {
+
+    private String functionName;
+    private Cart userCart;
+    private OrderHistory orderHistory;
+    private Product product;
+}

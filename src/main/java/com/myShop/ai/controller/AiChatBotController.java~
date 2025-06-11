@@ -1,0 +1,46 @@
+package com.myShop.ai.controller;
+
+
+import com.myShop.ai.service.AiChatBotService;
+import com.myShop.entity.User;
+import com.myShop.request.Prompt;
+import com.myShop.response.ApiResponse;
+import com.myShop.service.UserService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+
+@RequiredArgsConstructor
+@RestController
+@RequestMapping("/ai/chat")
+public class AiChatBotController {
+
+    private final AiChatBotService aiChatBotService;
+    private final UserService userService;
+
+
+    @PostMapping()
+    public ResponseEntity<ApiResponse> generate(
+            @RequestBody Prompt prompt,
+            @RequestParam(required = false) Long userId,
+            @RequestParam(required = false) Long productId,
+            @RequestHeader(required = false,name = "Authorization")String jwt)
+            throws Exception {
+
+        String message=prompt.getPrompt();
+        if(productId!=null){
+            message="this product id is "+productId+", "+message;
+        }
+
+        User user=new User();
+        if(jwt!=null)
+        {
+            user=userService.findUserByJwtToken(jwt);
+        }
+
+        ApiResponse apiResponse=aiChatBotService.aiChatBot(message,productId,user.getId());
+
+        return ResponseEntity
+    }
+}

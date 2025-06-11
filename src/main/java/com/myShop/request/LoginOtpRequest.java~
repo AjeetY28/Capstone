@@ -1,0 +1,9 @@
+package com.myShop.request;
+
+import com.myShop.domain.USER_ROLE;
+
+public class LoginOtpRequest {
+    String email;
+    String otp;
+    USER_ROLE role;
+}
